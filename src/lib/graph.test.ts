@@ -7,6 +7,7 @@ import { inlineLinks } from './parse'
 import { VIZ_IDS } from '../viz/ids'
 import { annotate, buildMatcher, parseGlossary } from './glossary'
 import { searchConcepts } from './search'
+import { TOOL_GROUPS, PRIORITIES, parseTools } from './tools'
 
 const dir = join(__dirname, '../content')
 const g = buildGraph(readdirSync(dir).map((f) => readFileSync(join(dir, f), 'utf8')))
@@ -97,6 +98,37 @@ describe('knowledge graph integrity', () => {
 function inline(s: string) {
   return [...s.matchAll(/\$([^$]+)\$/g)].map((m) => m[1])
 }
+
+describe('tools library', () => {
+  const tools = parseTools(readFileSync(join(__dirname, '../tools/tools.md'), 'utf8'))
+  const panels = readFileSync(join(__dirname, '../tools/panels.tsx'), 'utf8')
+
+  it('has a full teaching page for every tool', () => {
+    for (const t of tools) {
+      for (const k of ['summary', 'what', 'why', 'how', 'mistakes'] as const) expect(t[k], `${t.id} ${k}`).not.toBe('')
+      expect(t.practice.length, t.id).toBeGreaterThan(0)
+      expect(t.checks.length, t.id).toBeGreaterThan(0)
+      expect(t.lessons.length, t.id).toBeGreaterThan(0)
+    }
+  })
+  it('uses valid groups and priorities', () => {
+    for (const t of tools) {
+      expect(TOOL_GROUPS, t.id).toContain(t.group)
+      expect(PRIORITIES, t.id).toContain(t.priority)
+    }
+  })
+  it('links only to real lessons, simulators and panels', () => {
+    for (const t of tools) {
+      expect(t.lessons.filter((id) => !g.byId.has(id)), t.id).toEqual([])
+      expect(t.viz.filter((v) => !VIZ_IDS.includes(v)), t.id).toEqual([])
+      if (t.panel) expect(panels, t.id).toContain(`${t.panel}: {`)
+    }
+  })
+  it('has one right answer per check', () => {
+    for (const t of tools) for (const k of t.checks) expect(k.correct, k.q).toBeGreaterThanOrEqual(0)
+  })
+  it('has unique ids', () => expect(new Set(tools.map((t) => t.id)).size).toBe(tools.length))
+})
 
 describe('symbols and guides', () => {
   const guides = ['design', 'datasheets', 'examples'].map((n) => readFileSync(join(__dirname, `../symbols/${n}.md`), 'utf8'))

@@ -43,6 +43,26 @@ describe('physics used by the simulators', () => {
   })
 })
 
+describe('bench tools', () => {
+  it('holds voltage under the limit', () => expect(p.supplyOut(12, 1, 100)).toEqual({ v: 12, i: 0.12, mode: 'CV' }))
+  it('matches the 50 ohm limit example', () => expect(p.supplyOut(12, 0.1, 50)).toEqual({ v: 5, i: 0.1, mode: 'CC' }))
+  it('a short circuit gives near zero volts at the limit', () => {
+    const o = p.supplyOut(12, 0.5, 0.01)
+    expect(o.i).toBe(0.5)
+    expect(o.v).toBeLessThan(0.01)
+  })
+  it('charging never passes 4.2 V and current tapers', () => {
+    const c = p.chargeCurve(1.5, 1, 0.03)
+    expect(Math.max(...c.map((x) => x.v))).toBeLessThanOrEqual(4.2001)
+    expect(c[0].i).toBeCloseTo(1.5)
+    expect(c.at(-1)!.i).toBeLessThan(0.1)
+  })
+  it('a 2C charge is not twice as fast as 1C', () => {
+    const t = (r: number) => p.chargeCurve(1.5, r, 0.03).at(-1)!.t
+    expect(t(2)).toBeGreaterThan(t(1) / 2)
+  })
+})
+
 describe('physics for the later phases', () => {
   it('a tuned PID settles on the setpoint', () => {
     const pts = p.pidStep(20, 5, 6)

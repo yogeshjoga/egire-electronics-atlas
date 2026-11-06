@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { C, Controls, Out, Plot, Seg, Sim, Slider, Stage } from './kit'
-import { diesPerWafer, junctionTemp, microstripEeff, microstripZ0, pidStep, poissonYield, si } from '../lib/physics'
+import { chargeCurve, diesPerWafer, junctionTemp, microstripEeff, microstripZ0, pidStep, poissonYield, si, supplyOut } from '../lib/physics'
 
 export function DeadTimeViz() {
   const [dead, setDead] = useState(100)
@@ -226,6 +226,49 @@ export function WaferViz() {
         <Slider label="Wafer cost" value={cost} min={1000} max={25000} step={500} onChange={setCost} show={`$${cost.toLocaleString('en-US')}`} />
       </Controls>
       <Out items={[['Dies by formula', String(diesPerWafer(D, area))], ['Dies on this map', String(gross)], ['Good here', `${good} (${((good / gross) * 100).toFixed(0)}%)`], ['Model yield', `${(model * 100).toFixed(0)}%`], ['Cost per good die', good ? `$${(cost / good).toFixed(2)}` : 'None survive']]} />
+    </Sim>
+  )
+}
+
+export function SupplyViz() {
+  const [vset, setV] = useState(12)
+  const [ilim, setI] = useState(0.5)
+  const [r, setR] = useState(50)
+  const o = supplyOut(vset, ilim, r)
+  const top = ilim * 1.6
+  return (
+    <Sim note={o.mode === 'CC' ? 'The load wants more than the limit, so the supply holds the current and lets the voltage fall. A short circuit does exactly this, which saves your board.' : 'The load draws less than the limit, so the supply holds your set voltage. This is normal.'}>
+      <Plot h={200} x={[0, top]} y={[0, 30]} series={[
+        { pts: [[0, vset], [ilim, vset], [ilim, 0]] },
+        { f: (i) => i * r, color: C.cyan, dash: '5 4', width: 1.6 },
+      ]} dots={[{ x: o.i, y: o.v, color: C.pink }]} xlabel="Current (A)" ylabel="Voltage (V)" label="Supply output limits and load line" />
+      <Controls>
+        <Slider label="Set voltage" value={vset} min={0} max={30} step={0.1} onChange={setV} show={`${vset.toFixed(1)} V`} />
+        <Slider label="Current limit" value={ilim} min={0.01} max={5} step={0.01} onChange={setI} show={`${ilim.toFixed(2)} A`} />
+        <Slider label="Load" value={r} min={0.1} max={1000} log onChange={setR} show={si(r, 'Ω')} />
+      </Controls>
+      <Out items={[['Mode', o.mode === 'CC' ? 'CC: limiting' : 'CV: normal', o.mode === 'CC'], ['Output voltage', `${o.v.toFixed(2)} V`], ['Output current', `${o.i.toFixed(3)} A`], ['Power', si(o.v * o.i, 'W')]]} />
+    </Sim>
+  )
+}
+
+export function ChargerViz() {
+  const [ah, setAh] = useState(1.5)
+  const [rate, setRate] = useState(1)
+  const [mr, setMr] = useState(30)
+  const pts = useMemo(() => chargeCurve(ah, rate, mr / 1000), [ah, rate, mr])
+  const end = pts.at(-1)!.t
+  const switchAt = pts.find((p) => p.v >= 4.195)?.t ?? end
+  return (
+    <Sim note="A simple model of one cell, from nearly empty. Current holds steady, then voltage reaches 4.2 V and current falls away. Charging harder saves less time than you might expect, because the CV stage takes longer. Higher resistance means an older cell reaches CV sooner.">
+      <Plot h={150} x={[0, end]} y={[3.2, 4.4]} series={[{ pts: pts.map((p) => [p.t, p.v]) }]} marks={[{ y: 4.2, color: C.red }, { x: switchAt }]} xlabel="Minutes" ylabel="Cell voltage (V)" label="Voltage during charging" divs={[6, 4]} />
+      <Plot h={130} x={[0, end]} y={[0, ah * rate * 1.2]} series={[{ pts: pts.map((p) => [p.t, p.i]), color: C.cyan }]} marks={[{ x: switchAt }]} xlabel="Minutes" ylabel="Current (A)" label="Current during charging" divs={[6, 3]} />
+      <Controls>
+        <Slider label="Capacity" value={ah} min={0.3} max={10} step={0.1} onChange={setAh} show={`${ah.toFixed(1)} Ah`} />
+        <Slider label="Charge rate" value={rate} min={0.25} max={3} step={0.25} onChange={setRate} show={`${rate}C`} />
+        <Slider label="Cell resistance" value={mr} min={5} max={120} step={5} onChange={setMr} show={`${mr} mΩ`} />
+      </Controls>
+      <Out items={[['Charge current', `${(ah * rate).toFixed(1)} A`], ['CC stage', `${switchAt.toFixed(0)} min`], ['Total time', `${end.toFixed(0)} min`]]} />
     </Sim>
   )
 }

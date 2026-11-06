@@ -121,3 +121,27 @@ export const microstripEeff = (w: number, h: number, er: number) => (er + 1) / 2
 export const diesPerWafer = (d: number, a: number) => Math.floor((Math.PI * (d / 2) ** 2) / a - (Math.PI * d) / Math.sqrt(2 * a))
 export const poissonYield = (d0PerCm2: number, aMm2: number) => Math.exp(-d0PerCm2 * (aMm2 / 100))
 export const junctionTemp = (ta: number, p: number, ...theta: number[]) => ta + p * theta.reduce((s, x) => s + x, 0)
+
+/** A bench supply: constant voltage until the current limit, then constant current. */
+export function supplyOut(vset: number, ilim: number, r: number) {
+  const i = vset / r
+  return i > ilim ? { v: ilim * r, i: ilim, mode: 'CC' as const } : { v: vset, i, mode: 'CV' as const }
+}
+
+/** Simple CC/CV charge of one lithium cell. Time in minutes. */
+export function chargeCurve(ah: number, cRate: number, r: number) {
+  const icc = ah * cRate
+  const vmax = 4.2
+  const stop = ah * 0.05
+  const dt = 0.25 / 60   // hours
+  let soc = 0.02
+  const pts: { t: number; v: number; i: number }[] = []
+  for (let n = 0; n < 20000; n++) {
+    const ocv = 3.4 + 0.8 * soc
+    const i = Math.min(icc, (vmax - ocv) / r)
+    if (i < stop) break
+    pts.push({ t: n * dt * 60, v: ocv + i * r, i })
+    soc = Math.min(1, soc + (i * dt) / ah)
+  }
+  return pts
+}

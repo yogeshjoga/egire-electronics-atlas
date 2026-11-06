@@ -283,6 +283,7 @@ kind: method
 level: 2
 needs: lipo
 see: bms, c-rating
+viz: charger
 > Constant current first, then constant voltage, always balanced.
 
 Lithium cells charge in two stages.

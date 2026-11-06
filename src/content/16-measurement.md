@@ -85,6 +85,7 @@ W: All the current must flow through it, and it has near-zero resistance, so acr
 kind: method
 level: 1
 needs: ideal-sources
+viz: supply
 > A source with a settable voltage and current limit.
 
 A bench supply runs in one of two modes. In **constant voltage**, it holds your set voltage. If the load tries to draw more than your current limit, it switches to **constant current**, and the voltage falls to whatever gives the limit.

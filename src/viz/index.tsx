@@ -3,7 +3,7 @@ import { AtomViz, BandsViz, CoulombViz, DriftViz, FieldViz, MassViz, QuarksViz, 
 import { BatteryViz, DividerViz, KirchhoffViz, OhmViz, RcViz, ResistorCodeViz, SeriesParallelViz, TheveninViz, WireViz } from './circuits'
 import { EscViz, FilterViz, FourierViz, InductionViz, PhasorViz, RlcViz, TransformerViz } from './ac'
 import { AdcViz, BjtViz, CmosViz, DopingViz, MosfetViz, OpampViz, PnViz, RectifierViz, RegulatorViz } from './semi'
-import { DeadTimeViz, MicrostripViz, PidViz, SerialViz, ThermalViz, WaferViz } from './systems'
+import { ChargerViz, DeadTimeViz, MicrostripViz, PidViz, SerialViz, SupplyViz, ThermalViz, WaferViz } from './systems'
 import { BinaryViz, BuckViz, FlipFlopViz, LogicViz, MultimeterViz, PwmViz, ScopeViz, TraceViz } from './bench'
 
 export const VIZ: Record<string, ComponentType> = {
@@ -14,5 +14,5 @@ export const VIZ: Record<string, ComponentType> = {
   phasor: PhasorViz, rlc: RlcViz, filter: FilterViz, fourier: FourierViz, induction: InductionViz, transformer: TransformerViz, esc: EscViz,
   doping: DopingViz, pn: PnViz, rectifier: RectifierViz, bjt: BjtViz, mosfet: MosfetViz, opamp: OpampViz, regulator: RegulatorViz, adc: AdcViz, cmos: CmosViz,
   binary: BinaryViz, logic: LogicViz, flipflop: FlipFlopViz, pwm: PwmViz, buck: BuckViz, multimeter: MultimeterViz, scope: ScopeViz, trace: TraceViz,
-  deadtime: DeadTimeViz, thermal: ThermalViz, microstrip: MicrostripViz, serial: SerialViz, pid: PidViz, wafer: WaferViz,
+  deadtime: DeadTimeViz, thermal: ThermalViz, microstrip: MicrostripViz, serial: SerialViz, pid: PidViz, wafer: WaferViz, supply: SupplyViz, charger: ChargerViz,
 }

@@ -34,7 +34,9 @@ h1, h2, h3, p { margin: 0; }
 .top { display: flex; align-items: center; gap: 28px; height: 54px; padding: 0 18px; background: var(--mask-deep); border-bottom: 1px solid var(--trace); flex: none; }
 .brand { color: var(--silk); text-decoration: none; font-size: 19px; white-space: nowrap; }
 .brand strong { font-weight: 600; color: var(--gold); }
-.top nav { display: flex; gap: 4px; flex: 1; min-width: 0; }
+.top nav { display: flex; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.top nav::-webkit-scrollbar { display: none; }
+.search-btn { flex: none; }
 .top nav a { color: var(--silk-dim); text-decoration: none; padding: 6px 12px; border-radius: 5px; white-space: nowrap; }
 .top nav a:hover { color: var(--silk); }
 .top nav a[aria-current='page'] { color: var(--mask-deep); background: var(--gold); font-weight: 500; }
@@ -340,6 +342,35 @@ kbd { font: inherit; padding: 0 6px; margin-left: 6px; border-radius: 3px; backg
 .sheet tr[data-first] small { display: block; margin-top: 8px; font-size: 15px; font-weight: 600; color: var(--ink-soft); }
 .sheet-note { margin-top: 10px; font: 400 17px/1.5 var(--read); }
 
+.lab-grid em { display: block; margin-top: 4px; font-style: normal; font-size: 14.5px; color: var(--gold); }
+.tool-tags { display: flex; gap: 6px; margin: 8px 0 12px; }
+.tool-tags span { padding: 1px 9px; border: 1px solid var(--silk-dim); border-radius: 4px; font-size: 15.5px; }
+.tool-page .guide-body { padding-bottom: 16px; }
+.tool-page .guide-body .ds-section { border-bottom: 0; }
+.tool-page .guide-body .trap { border-left: 4px solid var(--alert); }
+.tool-page .sim { margin-top: 6px; }
+.tool-page .sim-stage { background: var(--mask-deep); }
+.chip { text-decoration: none; }
+.ds-pager a { color: var(--mask); }
+.ds-pager a:hover { text-decoration: underline; }
+.ds-pager a:last-child:not(:first-child) { text-align: right; }
+.practice { list-style: none; padding: 0 !important; }
+.practice label { display: flex; gap: 9px; align-items: flex-start; padding: 3px 0; cursor: pointer; }
+.practice input { margin-top: 6px; accent-color: var(--mask); flex: none; }
+.practice input:checked + span { color: var(--ink-soft); text-decoration: line-through; }
+.panel { display: grid; gap: 10px; padding: 10px; border-radius: 8px; background: var(--mask); color: var(--silk); }
+.panel svg { display: block; width: 100%; max-height: 380px; font-family: var(--ui); background: var(--mask-deep); border-radius: 5px; }
+.spot { cursor: pointer; outline: none; }
+.spot circle { fill: var(--mask-deep); stroke: var(--gold); stroke-width: 2; }
+.spot text { fill: var(--gold); }
+.spot[data-on] circle { fill: var(--gold); }
+.spot[data-on] text { fill: var(--mask-deep); }
+.spot:focus-visible circle { stroke: var(--silk); stroke-width: 3; }
+.panel-note { font: 400 16.5px/1.4 var(--ui); min-height: 118px; }
+.panel-note p { margin: 0 0 4px !important; max-width: none !important; }
+.panel-note b { color: var(--gold); font-weight: 600; font-size: 18px; }
+.panel-note .sim-seg { margin-top: 6px; }
+
 /* Search */
 .search-back { position: fixed; inset: 0; z-index: 30; padding: 9vh 14px 14px; background: rgba(3, 20, 16, .72); }
 .search { max-width: 620px; margin: 0 auto; background: var(--paper); color: var(--ink); border-radius: 8px; overflow: hidden; }
@@ -352,6 +383,7 @@ kbd { font: inherit; padding: 0 6px; margin-left: 6px; border-radius: 3px; backg
 .search small { grid-column: 1 / -1; color: var(--ink-soft); font-size: 15px; }
 .none { padding: 14px 16px; }
 
+@media (max-width: 1240px) { .top { gap: 14px; } .brand span, .search-btn span { display: none; } .top nav a { padding: 6px 9px; } }
 @media (max-width: 1100px) { .lesson, .lesson[data-wide] { width: 54vw; } .wide-toggle { display: none; } }
 @media (max-width: 860px) {
   .top { gap: 10px; padding: 0 10px; height: auto; min-height: 50px; flex-wrap: wrap; }

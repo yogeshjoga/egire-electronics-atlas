@@ -61,6 +61,8 @@ export const VIZ_GROUPS: { title: string; items: [string, string, string][] }[] 
     ['serial', 'Serial bus waveforms', 'UART, SPI and I²C for any byte'],
     ['pid', 'PID tuner', 'Tune a drone axis, then add delay and a gust'],
     ['wafer', 'Wafer yield', 'Die size, defects and cost per good chip'],
+    ['supply', 'Bench supply limits', 'Constant voltage, constant current, and protection'],
+    ['charger', 'LiPo charge curve', 'Watch CC turn into CV'],
   ]},
 ]
 
