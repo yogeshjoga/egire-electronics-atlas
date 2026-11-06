@@ -1,0 +1,68 @@
+// Display names for each simulator, grouped the way the Labs page lists them.
+export const VIZ_GROUPS: { title: string; items: [string, string, string][] }[] = [
+  { title: 'Inside matter', items: [
+    ['scale', 'Zoom into matter', 'Step from a drone to a quark'],
+    ['mass', 'Mass, weight and inertia', 'Push a mass, and move it between worlds'],
+    ['atom', 'Atom builder', 'Fill electron shells for any element up to krypton'],
+    ['quarks', 'Quark charge sums', 'Build protons and neutrons from u and d'],
+    ['standard-model', 'Standard Model table', 'Every known elementary particle'],
+    ['bands', 'Energy band explorer', 'Why materials conduct or insulate'],
+  ]},
+  { title: 'Charge and fields', items: [
+    ['coulomb', 'Coulomb force', 'Change charge and distance'],
+    ['field', 'Electric field map', 'Drag charges and watch field lines'],
+    ['drift', 'Electron drift', 'See how slowly electrons move'],
+  ]},
+  { title: 'DC circuits', items: [
+    ['ohm', 'Ohm\'s law bench', 'Voltage, resistance and live current'],
+    ['wire', 'Wire and heat', 'Resistance, drop and loss for real wire'],
+    ['series-parallel', 'Series and parallel', 'Compare the same resistors both ways'],
+    ['kirchhoff', 'Kirchhoff node solver', 'KCL and KVL on a two-source circuit'],
+    ['divider', 'Voltage divider', 'See how a load disturbs the output'],
+    ['thevenin', 'Maximum power', 'Sweep a load across a Thevenin source'],
+    ['resistor-code', 'Resistor colour code', 'Read value from bands'],
+    ['battery', 'Drone power planner', 'Pack, loads, sag and flight time'],
+    ['rc', 'RC and RL transients', 'Time constants, live'],
+  ]},
+  { title: 'AC and magnetics', items: [
+    ['phasor', 'Phasor and sine', 'A rotating arrow draws a wave'],
+    ['rlc', 'RLC resonance', 'Impedance against frequency'],
+    ['filter', 'Filter Bode plot', 'Move the corner frequency'],
+    ['fourier', 'Fourier builder', 'Add harmonics to make a square wave'],
+    ['induction', 'Faraday induction', 'Move a magnet through a coil'],
+    ['transformer', 'Transformer', 'Turns ratio, voltage and current'],
+    ['esc', 'Six-step commutation', 'How an ESC spins a brushless motor'],
+  ]},
+  { title: 'Semiconductors and analog', items: [
+    ['doping', 'Doping a silicon lattice', 'Add phosphorus or boron'],
+    ['pn', 'PN junction and diode curve', 'Bias the junction'],
+    ['rectifier', 'Rectifier and ripple', 'AC to smoothed DC'],
+    ['bjt', 'BJT output curves', 'Base current and load line'],
+    ['mosfet', 'MOSFET curves', 'Gate voltage and channel'],
+    ['opamp', 'Op-amp gain', 'Feedback, clipping and inverting'],
+    ['regulator', 'Linear or switching?', 'Compare heat and efficiency'],
+    ['adc', 'Sampling and aliasing', 'Nyquist, live'],
+    ['cmos', 'CMOS inverter', 'Transfer curve and transistor states'],
+  ]},
+  { title: 'Digital, power and bench', items: [
+    ['binary', 'Binary flip board', 'Toggle bits and read the value'],
+    ['logic', 'Logic gates', 'Truth tables and a half adder'],
+    ['flipflop', 'Flip-flops and counters', 'Clock a 4-bit counter'],
+    ['pwm', 'PWM', 'Duty cycle and average voltage'],
+    ['buck', 'Buck and boost converters', 'Duty, ripple and inductor current'],
+    ['multimeter', 'Multimeter practice', 'Connect it right, or blow the fuse'],
+    ['scope', 'Oscilloscope trainer', 'Volts per division, time, trigger'],
+    ['trace', 'PCB trace calculator', 'IPC-2221 width and drop'],
+  ]},
+  { title: 'Systems and silicon', items: [
+    ['deadtime', 'Half-bridge dead time', 'Avoid shoot-through without wasting efficiency'],
+    ['thermal', 'Thermal stack', 'Junction temperature from power and °C/W'],
+    ['microstrip', 'Trace impedance', 'Width, height and material set Z₀'],
+    ['serial', 'Serial bus waveforms', 'UART, SPI and I²C for any byte'],
+    ['pid', 'PID tuner', 'Tune a drone axis, then add delay and a gust'],
+    ['wafer', 'Wafer yield', 'Die size, defects and cost per good chip'],
+  ]},
+]
+
+export const VIZ_IDS = VIZ_GROUPS.flatMap((g) => g.items.map((i) => i[0]))
+export const VIZ_TITLE = new Map(VIZ_GROUPS.flatMap((g) => g.items.map((i) => [i[0], i[1]] as const)))
