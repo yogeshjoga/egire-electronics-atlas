@@ -309,3 +309,34 @@ Q: What happens to charging current in the CV stage?
 - It rises
 - It stays constant
 W: As the cell approaches the set voltage, less current flows.
+
+# faraday-electrolysis: Faraday's laws of electrolysis
+kind: law
+level: 2
+needs: electrochemical-cell, current
+see: capacity-ah-wh, lipo
+> The amount of chemical change is proportional to the charge passed.
+
+Every electron that passes through a cell drives a fixed amount of chemistry. So charge can be counted in atoms. This law links Ah ratings to actual material, and explains why capacity depends on how much active material a cell holds.
+
+These are different from [[faraday-law|Faraday's law of induction]], by the same scientist.
+
+## Math
+$$m = \frac{QM}{zF}$$ Mass changed, with molar mass $M$ and $z$ electrons per ion.
+$$F = 96\,485\ \text{C/mol}$$ Faraday constant, about 26.8 Ah per mole.
+
+## Example
+Q: How much copper is plated by 1 A for 1 hour? ($M$ = 63.55 g/mol, $z$ = 2)
+- $Q = 3600$ C
+- $m = 3600\times63.55/(2\times96485)$
+A: About 1.19 g.
+Q: What is the theoretical capacity of lithium metal? ($M$ = 6.94 g/mol, $z$ = 1)
+- $26.8$ Ah per mole, divided by $6.94$ g per mole
+A: About 3.86 Ah per gram, which is why lithium is so attractive.
+
+## Check
+Q: What sets how much material a cell reaction uses?
++ The total charge passed
+- The voltage alone
+- The wire length
+W: Each electron drives a fixed amount of reaction.

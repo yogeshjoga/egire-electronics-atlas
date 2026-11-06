@@ -159,3 +159,50 @@ Q: KVL expresses conservation of:
 + Energy
 - Current
 W: Going round a loop, the energy gained per coulomb equals the energy lost.
+
+# wiedemann-franz: Wiedemann–Franz law
+kind: law
+level: 2
+needs: resistivity, heat-temperature
+see: copper-pours
+> Good electrical conductors are also good heat conductors, and for the same reason.
+
+In a metal, free electrons carry both charge and heat. So the ratio of thermal to electrical conductivity is nearly the same for all metals. That's why copper works as both wire and heatsink.
+
+## Math
+$$\frac{\kappa}{\sigma} = LT$$ Where $L = 2.44\times10^{-8}\ \text{W}\Omega/\text{K}^2$ is the Lorenz number.
+
+## Example
+Q: Estimate copper's thermal conductivity at 300 K, with $\sigma = 5.96\times10^7$ S/m.
+- $\kappa = 2.44\times10^{-8}\times5.96\times10^7\times300$
+A: About 436 W/m·K. The measured value is about 400.
+
+## Check
+Q: Why do metals conduct both heat and electricity well?
++ Free electrons carry both
+- Their atoms are heavy
+- They are shiny
+W: The same mobile electrons do both jobs.
+
+# thermoelectric: Seebeck and Peltier effects
+kind: law
+level: 2
+needs: voltage, heat-temperature
+see: voltage-reference
+> A temperature difference makes a voltage, and current can move heat.
+
+Join two different metals. If the two ends are at different temperatures, a small voltage appears: the **Seebeck effect**. Thermocouples use it to measure high temperatures.
+
+Run this backwards and you get the **Peltier effect**: current pumps heat from one junction to the other, as in small solid-state coolers.
+
+## Math
+$$V = S\Delta T$$ Seebeck voltage, with coefficient $S$.
+$$\dot Q = \Pi I$$ Peltier heat flow.
+
+## Example
+Q: A K-type thermocouple gives 41 µV/°C. What is the voltage for a 100 °C difference?
+- $41\times100$ µV
+A: About 4.1 mV.
+
+## Watch out
+A thermocouple measures a difference. You must also know the temperature at the connector, which is called cold-junction compensation.

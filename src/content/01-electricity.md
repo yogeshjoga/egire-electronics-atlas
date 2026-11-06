@@ -323,3 +323,27 @@ Every insulator has a limit. Beyond it, electrons are torn free, they knock more
 Q: About how far can a 12 kV spark jump in dry air?
 - $d = V/E = 12\,000 / (3\times10^{6})$
 A: About 4 mm.
+
+# paschen-law: Paschen's law
+kind: law
+level: 3
+needs: dielectric-breakdown
+see: static-electricity
+> The voltage needed to spark depends on gas pressure times gap distance.
+
+You might expect thinner air to insulate better, as there is less gas. The opposite is often true. An electron needs room to speed up between collisions, so thin air can break down at a lower voltage. Very thin air, like a good vacuum, becomes hard to spark again, because there is too little gas to feed the avalanche.
+
+For air, the lowest spark voltage is about 330 V. Below that, a spark can't start across a gap in air at any pressure.
+
+## Math
+$$V_b = \frac{Bpd}{\ln(Apd)-\ln\ln(1+1/\gamma)}$$ Breakdown voltage, for pressure $p$ and gap $d$.
+
+## EgireRobotics
+High-voltage electronics on high-altitude craft need more clearance, as thin air sparks more easily. Normal drone voltages are far below the danger level.
+
+## Check
+Q: Why does thin air at altitude spark more easily?
++ Electrons travel further between collisions and gain more energy
+- Thin air contains more charge
+- Temperature is higher
+W: Longer free paths let electrons reach ionising energy at lower fields.

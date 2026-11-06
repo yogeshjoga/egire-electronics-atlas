@@ -255,8 +255,8 @@ Q: What sets a crystal oscillator's accuracy?
 - The size of the MCU
 W: Quartz vibrates at a very precise frequency.
 
-# sampling: Sampling and Nyquist
-kind: concept
+# sampling: Sampling and Nyquist theorem
+kind: law
 level: 2
 needs: frequency, harmonics
 viz: adc
@@ -392,3 +392,51 @@ $$f_{out} = Nf_{ref}$$ Locked output frequency.
 Q: 8 MHz reference with $N$ = 21. What's the output?
 - $21\times8$
 A: 168 MHz.
+
+# miller-theorem: Miller's theorem
+kind: law
+level: 3
+needs: amplifier, capacitor
+see: gate-driver
+> A small capacitor across a gain stage acts like a much larger one.
+
+A capacitor between an amplifier's input and its inverted output sees a voltage swing multiplied by the gain. So the input feels a far larger capacitance. This limits amplifier bandwidth, and it causes the flat plateau in a MOSFET's gate voltage during switching.
+
+## Math
+$$C_{in} = C(1+|A|)$$ Miller capacitance.
+
+## Example
+Q: 5 pF sits across a stage with gain −100. What does the input see?
+- $5\times101$
+A: 505 pF.
+
+## EgireRobotics
+Miller effect can falsely turn on a low-side MOSFET in an ESC, when the switch node rises fast. Gate drivers fight it with a strong pull-down.
+
+# shannon-hartley: Shannon–Hartley theorem
+kind: law
+level: 3
+needs: sampling, noise, logarithms-db
+see: radio-link
+> The maximum data rate any channel can carry.
+
+Noise and bandwidth set a hard limit. No radio, cable or coding method can beat it. More bandwidth helps directly, but more signal-to-noise helps only logarithmically.
+
+## Math
+$$C = B\log_2(1+\text{SNR})$$ Channel capacity in bit/s.
+
+## Example
+Q: A 20 MHz channel has 30 dB of SNR. What's the limit?
+- SNR $= 1000$
+- $20\times10^6\times\log_2 1001$
+A: About 200 Mbit/s.
+
+## EgireRobotics
+This is why digital video links lose range as you ask for more bitrate.
+
+## Check
+Q: Doubling bandwidth, with the same SNR, does what to capacity?
++ Doubles it
+- Adds 3 dB
+- Halves it
+W: Capacity is proportional to B.

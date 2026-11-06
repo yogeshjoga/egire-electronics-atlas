@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { graph } from '../lib/content'
+import { searchConcepts } from '../lib/search'
 import { Inline } from './Rich'
 
 export function Search({ onPick, onClose }: { onPick: (id: string) => void; onClose: () => void }) {
@@ -8,18 +9,7 @@ export function Search({ onPick, onClose }: { onPick: (id: string) => void; onCl
   const input = useRef<HTMLInputElement>(null)
   useEffect(() => input.current?.focus(), [])
 
-  const hits = useMemo(() => {
-    const s = q.trim().toLowerCase()
-    if (!s) return graph.concepts.slice(0, 8)
-    const score = (t: string, sum: string, body: string) =>
-      t.startsWith(s) ? 4 : t.includes(s) ? 3 : sum.includes(s) ? 2 : body.includes(s) ? 1 : 0
-    return graph.concepts
-      .map((c) => ({ c, n: score(c.title.toLowerCase(), c.summary.toLowerCase(), c.nature.toLowerCase()) }))
-      .filter((x) => x.n)
-      .sort((a, b) => b.n - a.n)
-      .slice(0, 10)
-      .map((x) => x.c)
-  }, [q])
+  const hits = useMemo(() => searchConcepts(graph.concepts, q, q.trim() ? 10 : 8), [q])
 
   return (
     <div className="search-back" onClick={onClose}>

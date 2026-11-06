@@ -6,6 +6,7 @@ import { ancestors, buildGraph, findPath, readySet, rootChain } from './graph'
 import { inlineLinks } from './parse'
 import { VIZ_IDS } from '../viz/ids'
 import { annotate, buildMatcher, parseGlossary } from './glossary'
+import { searchConcepts } from './search'
 
 const dir = join(__dirname, '../content')
 const g = buildGraph(readdirSync(dir).map((f) => readFileSync(join(dir, f), 'utf8')))
@@ -96,6 +97,58 @@ describe('knowledge graph integrity', () => {
 function inline(s: string) {
   return [...s.matchAll(/\$([^$]+)\$/g)].map((m) => m[1])
 }
+
+describe('symbols and guides', () => {
+  const guides = ['design', 'datasheets', 'examples'].map((n) => readFileSync(join(__dirname, `../symbols/${n}.md`), 'utf8'))
+  const lib = readFileSync(join(__dirname, '../symbols/library.tsx'), 'utf8')
+
+  it('points every symbol at a real lesson', () => {
+    const ids = [...lib.matchAll(/lesson: '([a-z0-9-]+)'/g)].map((m) => m[1])
+    expect(ids.length).toBeGreaterThan(30)
+    expect(ids.filter((id) => !g.byId.has(id))).toEqual([])
+  })
+  it('gives each symbol a unique id', () => {
+    const ids = [...lib.matchAll(/\{ id: '([a-z0-9-]+)'/g)].map((m) => m[1])
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+  it('links guides only to real lessons', () => {
+    const refs = guides.flatMap((t) => [...t.matchAll(/\[\[([a-z0-9-]+)/g)].map((m) => m[1]))
+    expect(refs.filter((id) => !g.byId.has(id))).toEqual([])
+  })
+  it('renders all guide maths', () => {
+    const bad: string[] = []
+    for (const t of guides) for (const tex of inline(t)) {
+      try { katex.renderToString(tex, { throwOnError: true }) } catch { bad.push(tex) }
+    }
+    expect(bad).toEqual([])
+  })
+  it('cites sources for the real product examples', () => {
+    expect((guides[2].match(/\]\(https:\/\//g) ?? []).length).toBeGreaterThan(8)
+  })
+})
+
+describe('concept search', () => {
+  it('puts title matches first', () => {
+    expect(searchConcepts(g.concepts, 'buck')[0].id).toBe('buck')
+  })
+  it('ignores case and spaces', () => {
+    expect(searchConcepts(g.concepts, '  MOSFET ')[0].title.toLowerCase()).toContain('mosfet')
+  })
+  it('returns nothing for nonsense', () => {
+    expect(searchConcepts(g.concepts, 'zzzzqq')).toEqual([])
+  })
+  it('respects the limit', () => {
+    expect(searchConcepts(g.concepts, 'a', 8).length).toBe(8)
+  })
+})
+
+describe('laws', () => {
+  it('includes every law and theorem on the course list', () => {
+    const course = ['ohms-law', 'kcl', 'kvl', 'joule-heating', 'coulomb-law', 'faraday-law', 'lenz-law', 'ampere-law',
+      'gauss-law', 'biot-savart', 'thevenin', 'norton', 'superposition', 'max-power']
+    expect(course.filter((id) => g.byId.get(id)?.kind !== 'law')).toEqual([])
+  })
+})
 
 describe('glossary', () => {
   const list = parseGlossary(readFileSync(join(__dirname, '../glossary/words.md'), 'utf8'))

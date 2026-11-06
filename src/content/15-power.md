@@ -450,3 +450,31 @@ A: 3.33 W.
 
 ## Lab
 Measure input and output voltage and current at 10%, 50% and 100% load, using separate meters. Plot the curve and find the peak.
+
+# heat-transfer-laws: Laws of heat transfer
+kind: law
+level: 2
+needs: thermal-design, heat-temperature
+see: copper-pours, wiedemann-franz
+> Fourier, Newton and Stefan–Boltzmann: how heat leaves your board.
+
+- **Fourier's law:** conduction through a solid.
+- **Newton's law of cooling:** convection into moving air.
+- **Stefan–Boltzmann law:** radiation, rising with the fourth power of absolute temperature.
+
+## Math
+$$\dot Q = \frac{kA\Delta T}{d}$$ Fourier conduction.
+$$\dot Q = hA\Delta T$$ Newton's law of cooling.
+$$P = \varepsilon\sigma A(T_1^4-T_2^4)$$ Stefan–Boltzmann radiation, with $\sigma = 5.67\times10^{-8}\ \text{W/m}^2\text{K}^4$.
+
+## Example
+Q: How much heat flows along 1 oz copper 10 mm wide and 20 mm long, with a 10 °C difference?
+- $A = 10\ \text{mm}\times35\ \mu\text{m} = 3.5\times10^{-7}$ m²
+- $400\times3.5\times10^{-7}\times10/0.02$
+A: About 0.07 W. Thin copper needs width and vias to move real heat.
+Q: A 100 cm² black surface sits at 60 °C in 25 °C air. How much does it radiate? ($\varepsilon$ = 0.9)
+- $0.01\times0.9\times5.67\times10^{-8}\times(333^4-298^4)$
+A: About 2.3 W.
+
+## EgireRobotics
+Airflow raises $h$ many times over, which is why ESCs that are fine in flight overheat on the bench.

@@ -392,3 +392,89 @@ Q: Why are Hall sensors made from semiconductors?
 - Metals block magnetic fields
 - They are cheaper than copper
 W: V_H is inversely proportional to carrier density.
+
+# gauss-magnetism: Gauss's law for magnetism
+kind: law
+level: 3
+needs: magnetic-flux, gauss-law
+see: maxwell
+> There are no magnetic charges: field lines always form closed loops.
+
+Cut a bar magnet in half and you get two magnets, each with north and south. No single pole has ever been found. So as much magnetic flux leaves any closed surface as enters it.
+
+## Math
+$$\oint\vec B\cdot d\vec A = 0$$ Net flux out of a closed surface.
+
+## Check
+Q: What happens when you cut a magnet in half?
++ You get two complete magnets
+- You get a separate north and south
+- It stops being magnetic
+W: Magnetic poles always come in pairs.
+
+# fleming-rules: Fleming's hand rules
+kind: law
+level: 1
+needs: lorentz-force, faraday-law
+see: dc-motor, transformer
+> Hand rules that give the direction of force and induced current.
+
+Hold your thumb, first finger and second finger at right angles.
+
+- **First finger:** field.
+- **Second finger:** current.
+- **Thumb:** motion.
+
+Use the **left hand for motors**, where current makes motion. Use the **right hand for generators**, where motion makes current.
+
+## Check
+Q: Which hand gives the force direction in a motor?
++ Left
+- Right
+- Either
+W: Left for motors, right for generators.
+
+# hopkinson-law: Hopkinson's law
+kind: law
+level: 2
+needs: magnetic-flux, magnetic-materials
+see: inductor, transformer
+> Ohm's law for magnetic circuits.
+
+Magnetic flux flows round a core as current flows round a circuit. Turns times current acts like voltage, and the core's reluctance acts like resistance. So you can solve a core with the same series and parallel thinking.
+
+An air gap has huge reluctance, even when tiny. Designers add one on purpose to stop a core saturating.
+
+## Math
+$$\mathcal{F} = NI = \Phi\mathcal{R}$$ Magnetomotive force.
+$$\mathcal{R} = \frac{l}{\mu A}$$ Reluctance.
+
+## Example
+Q: A core has $l$ = 0.1 m, $A$ = 1 cm², $\mu_r$ = 2000. With 100 turns and 0.1 A, find the flux.
+- $\mathcal{R} = 0.1/(2000\times4\pi\times10^{-7}\times10^{-4}) = 4\times10^5$
+- $\Phi = 10/(4\times10^5)$
+A: 25 µWb, or 0.25 T.
+Q: What is the reluctance of a 1 mm air gap in that core?
+- $10^{-3}/(4\pi\times10^{-7}\times10^{-4})$
+A: About $8\times10^6$, 20 times more than the whole core.
+
+# poynting: Poynting's theorem
+kind: law
+level: 4
+needs: maxwell
+see: em-waves
+> Electrical energy travels in the fields around a wire, not inside it.
+
+This is a surprise. Energy flows from a battery to a lamp through the space around the wires, carried by the electric and magnetic fields. The wires guide it, and electrons in them do not carry it along.
+
+That fits [[drift-velocity|drift velocity]]: electrons crawl, yet energy arrives almost at once. It's also why a PCB's dielectric, and the gap between signal and ground, matters so much at high speed.
+
+## Math
+$$\vec S = \vec E\times\vec H$$ Energy flow per unit area, in W/m².
+
+## Check
+Q: Where does energy travel in a DC circuit?
++ In the fields around the conductors
+- Inside the electrons
+- Only through the wire's core
+W: The Poynting vector points along the wire, in the surrounding space.

@@ -40,7 +40,7 @@ level: 1
 needs: pcb-basics
 > Drawing the electrical design that drives everything else.
 
-Tools such as KiCad and Altium hold symbols, nets and part values. The schematic is the source of truth, and the layout must match it. Run ERC to catch unconnected pins. Add every decoupling capacitor and pull-up here, since the layout will not invent them.
+Tools such as KiCad and Altium hold symbols, nets and part values. The [Symbols page](#/symbols/design) covers schematic design in depth. The schematic is the source of truth, and the layout must match it. Run ERC to catch unconnected pins. Add every decoupling capacitor and pull-up here, since the layout will not invent them.
 
 ## Engineering
 Make it readable: group by function, label nets by purpose, and note voltage and current on power nets. Add test points and spare pads while it's cheap.

@@ -108,7 +108,7 @@ Q: 12 V drives 2 Ω then a shared 4 Ω, and the second loop adds 2 Ω. Find both
 A: $i_1 = 3.6$ A and $i_2 = 2.4$ A. The shared 4 Ω carries 1.2 A.
 
 # superposition: Superposition theorem
-kind: method
+kind: law
 level: 2
 needs: nodal-analysis
 > In a linear circuit, solve each source alone, then add.
@@ -134,7 +134,7 @@ Q: When a voltage source is switched off in superposition, it becomes:
 W: Zero volts across it means a wire. Current sources become open circuits.
 
 # thevenin: Thevenin's theorem
-kind: method
+kind: law
 level: 2
 needs: ideal-sources, voltage-divider, nodal-analysis
 viz: thevenin
@@ -170,7 +170,7 @@ Q: What is $V_{th}$?
 W: With nothing attached, the terminals show V_th.
 
 # norton: Norton's theorem
-kind: method
+kind: law
 level: 2
 needs: thevenin
 > The same idea with a current source and parallel resistor.
@@ -225,3 +225,76 @@ A simulation is only as good as its models. It doesn't include your layout's par
 
 ## Lab
 Simulate an RC filter in LTspice, and compare it with one you built.
+
+# source-transformation: Source transformation
+kind: law
+level: 2
+needs: ideal-sources, ohms-law
+see: thevenin, norton
+> Swap a voltage source and series resistor for a current source and parallel resistor.
+
+From the outside, these two look identical, so you can swap whichever makes a circuit simpler. Repeated swaps can reduce a network to one source.
+
+## Math
+$$I_s = \frac{V_s}{R},\quad R\ \text{unchanged}$$ Conversion.
+
+## Example
+Q: Convert 12 V in series with 4 Ω.
+- $I = 12/4$
+A: 3 A in parallel with 4 Ω.
+
+# millman: Millman's theorem
+kind: law
+level: 2
+needs: nodal-analysis, parallel
+viz: kirchhoff
+> A quick formula for the voltage where several branches meet.
+
+If many branches join between two nodes, each with a source and a resistor, the shared voltage is a weighted average. It's a shortcut for one line of nodal analysis.
+
+## Math
+$$V = \frac{\sum V_k/R_k}{\sum 1/R_k}$$ Common node voltage.
+
+## Example
+Q: 12 V through 100 Ω and 5 V through 150 Ω meet at a node, with 220 Ω to ground. Find the voltage.
+- Top: $0.12+0.0333 = 0.1533$
+- Bottom: $0.01+0.00667+0.00455 = 0.02121$
+A: 7.23 V, matching the Kirchhoff simulator.
+
+## EgireRobotics
+This explains what happens when batteries or supplies are joined in parallel: the node settles at a resistance-weighted average.
+
+# reciprocity: Reciprocity theorem
+kind: law
+level: 3
+needs: superposition
+see: antenna
+> In a passive linear network, swapping source and meter gives the same reading.
+
+Put a voltage source in one branch and read current in another. Swap them, and the reading is unchanged. This holds for networks of R, L and C, but not ones with amplifiers.
+
+Its best-known result: an antenna has the same pattern when transmitting as when receiving.
+
+## Check
+Q: Which circuit does reciprocity not apply to?
++ One containing an amplifier
+- A resistor network
+- An LC filter
+W: Active parts work in one direction.
+
+# tellegen: Tellegen's theorem
+kind: law
+level: 3
+needs: kcl, kvl
+> The powers in all branches of a circuit add up to zero.
+
+If a circuit obeys KCL and KVL, the power delivered by sources exactly equals the power taken by everything else. It holds for any kind of component, linear or not. Use it to check your answers.
+
+## Math
+$$\sum_k v_ki_k = 0$$ Sum over all branches.
+
+## Example
+Q: A 12 V source gives 2 A. One resistor drops 9 V and another 3 V. Check the power.
+- Source: $-24$ W
+- Resistors: $18+6$ W
+A: The total is zero, so the solution balances.

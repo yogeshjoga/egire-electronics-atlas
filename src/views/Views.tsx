@@ -72,6 +72,41 @@ export function Formulas({ open }: { open: (id: string) => void }) {
   )
 }
 
+export function Laws({ open }: { open: (id: string) => void }) {
+  const [q, setQ] = useState('')
+  const s = q.trim().toLowerCase()
+  const all = graph.concepts.filter((c) => c.kind === 'law')
+  const list = all.filter((c) => !s || c.title.toLowerCase().includes(s) || c.summary.toLowerCase().includes(s))
+  return (
+    <div className="page">
+      <h1>Laws and theorems</h1>
+      <p className="lede">All {all.length} in one place, in learning order. Select one to open its lesson.</p>
+      <div className="filter-row">
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Find a law, such as Faraday" aria-label="Find a law" />
+      </div>
+      {graph.phases.map((p) => {
+        const items = list.filter((c) => c.phase === p.n)
+        if (!items.length) return null
+        return (
+          <section key={p.n}>
+            <h2>{p.n}. {p.title}</h2>
+            <div className="formula-grid">
+              {items.map((c) => (
+                <button key={c.id} type="button" onClick={() => open(c.id)}>
+                  {c.math[0] && <Tex src={c.math[0].tex} display />}
+                  <b>{c.title}</b>
+                  <span><Inline text={c.summary} /></span>
+                </button>
+              ))}
+            </div>
+          </section>
+        )
+      })}
+      {list.length === 0 && <p className="lede">No law matches "{q}". Try a shorter search.</p>}
+    </div>
+  )
+}
+
 export function Words({ open }: { open: (id: string) => void }) {
   const [q, setQ] = useState('')
   const s = q.trim().toLowerCase()

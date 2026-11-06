@@ -7,10 +7,11 @@ import { Lesson } from './components/Lesson'
 import { KIND_LABEL, PadShape } from './components/Pad'
 import { OpenConcept } from './components/Rich'
 import { Search } from './components/Search'
-import { Formulas, Labs, Research, SelfTest, Words } from './views/Views'
+import { Formulas, Labs, Laws, Research, SelfTest, Words } from './views/Views'
+import { Symbols } from './views/Symbols'
 import type { Kind } from './lib/parse'
 
-const TABS: [View, string][] = [['board', 'Board'], ['labs', 'Labs'], ['formulas', 'Formulas'], ['words', 'Words'], ['test', 'Self-test'], ['research', 'Research']]
+const TABS: [View, string][] = [['board', 'Board'], ['labs', 'Labs'], ['formulas', 'Formulas'], ['laws', 'Laws'], ['symbols', 'Symbols'], ['words', 'Words'], ['test', 'Self-test'], ['research', 'Research']]
 
 export default function App() {
   const { route, go } = useRoute()
@@ -103,6 +104,8 @@ export default function App() {
             )}
             {route.view === 'labs' && <Labs active={route.arg} go={(id) => go('labs', id)} open={open} />}
             {route.view === 'formulas' && <Formulas open={open} />}
+            {route.view === 'laws' && <Laws open={open} />}
+            {route.view === 'symbols' && <Symbols tab={route.arg} go={(t) => go('symbols', t)} open={open} />}
             {route.view === 'words' && <Words open={open} />}
             {route.view === 'test' && <SelfTest open={open} />}
             {route.view === 'research' && <Research open={open} learned={learned} />}

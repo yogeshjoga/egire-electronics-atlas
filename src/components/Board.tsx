@@ -6,6 +6,7 @@ import { graph } from '../lib/content'
 import { ancestors } from '../lib/graph'
 import { layoutBoard, layoutTrace, route, type Pt } from '../lib/layout'
 import type { Concept } from '../lib/parse'
+import { BoardFinder } from './BoardFinder'
 import { PadShape } from './Pad'
 
 const board = layoutBoard(graph)
@@ -75,6 +76,7 @@ export function Board({ selected, learned, ready, focusPhase, onSelect, onPhaseI
   const [wantMode, setMode] = useState<'board' | 'trace'>('board')
   const mode = selected ? wantMode : 'board'
   const [depth, setDepth] = useState(3)
+  const [jump, setJump] = useState<{ id: string; n: number } | null>(null)
 
   useEffect(() => {
     const el = svg.current!
@@ -136,6 +138,16 @@ export function Board({ selected, learned, ready, focusPhase, onSelect, onPhaseI
     if (trace) requestAnimationFrame(() => fit(trace.bounds.x, trace.bounds.y, trace.bounds.w, trace.bounds.h, 1, 0.6))
   }, [trace, fit])
 
+  const flyTo = useCallback((p: Pt) => {
+    const el = svg.current!
+    const b = el.getBoundingClientRect()
+    const k = Math.max(zoomTransform(el).k, 0.8)
+    const t = zoomIdentity.translate(b.width / 2 - p.x * k, b.height / 2 - p.y * k).scale(k)
+    const sel = select(el)
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) sel.call(zb.current!.transform, t)
+    else sel.transition().duration(550).call(zb.current!.transform, t)
+  }, [])
+
   // Keep the selected pad in view when the lesson panel changes the board's width.
   const lastSel = useRef<string | undefined>(undefined)
   useEffect(() => {
@@ -151,15 +163,25 @@ export function Board({ selected, learned, ready, focusPhase, onSelect, onPhaseI
         const sy = cur.applyY(p.y)
         // Leave the view alone when the pad is already comfortably on screen and readable.
         if (cur.k >= 0.55 && sx > 60 && sx < b.width - 60 && sy > 90 && sy < b.height - 70) return
-        const k = Math.max(cur.k, 0.8)
-        const t = zoomIdentity.translate(b.width / 2 - p.x * k, b.height / 2 - p.y * k).scale(k)
-        const sel = select(el)
-        if (matchMedia('(prefers-reduced-motion: reduce)').matches) sel.call(zb.current!.transform, t)
-        else sel.transition().duration(550).call(zb.current!.transform, t)
+        flyTo(p)
       })
     }
     lastSel.current = selected
-  }, [selected, mode, onPhaseInView])
+  }, [selected, mode, onPhaseInView, flyTo])
+
+  // A pick from the search box or dropdown always centres its pad, even if it is the current one.
+  const done = useRef(0)
+  useEffect(() => {
+    if (!jump || jump.n === done.current || selected !== jump.id || mode !== 'board') return
+    done.current = jump.n
+    requestAnimationFrame(() => flyTo(board.pos.get(jump.id)!))
+  }, [jump, selected, mode, flyTo])
+
+  const pick = useCallback((id: string) => {
+    setMode('board')
+    setJump((j) => ({ id, n: (j?.n ?? 0) + 1 }))
+    onSelect(id)
+  }, [onSelect])
 
   const stateOf = (id: string) => (learned.has(id) ? 'learned' : ready.has(id) ? 'ready' : 'idle')
 
@@ -238,6 +260,7 @@ export function Board({ selected, learned, ready, focusPhase, onSelect, onPhaseI
           </div>
         )}
         {mode === 'board' && <button type="button" className="ghost" onClick={() => fit(0, 0, board.width, board.height)}>Fit whole board</button>}
+        <BoardFinder selected={selected} onPick={pick} />
       </div>
 
       <div className="board-key" aria-hidden="true">

@@ -628,3 +628,63 @@ Q: What does a wave carry from place to place?
 - The material it travels through
 - Electrons
 W: Particles of the medium move only locally, while energy travels along.
+
+# newton-laws: Newton's laws of motion
+kind: law
+level: 1
+needs: force, mass
+see: motion, lorentz-force
+> Three rules that connect force, mass and motion.
+
+- **First law:** an object keeps doing what it is doing unless a net force acts on it. This is inertia.
+- **Second law:** net force equals mass times acceleration.
+- **Third law:** every force has an equal and opposite partner.
+
+All three are at work in a hovering drone. The first says it stays put while forces balance. The second tells you how quickly it climbs when thrust rises. The third is how thrust exists at all: the propeller throws air down, and the air pushes the propeller up.
+
+## Engineering
+The same laws describe electrons between collisions, and the tiny moving mass inside a MEMS accelerometer.
+
+## Math
+$$\sum F = 0 \Rightarrow a = 0$$ First law.
+$$F = ma$$ Second law.
+$$F_{AB} = -F_{BA}$$ Third law.
+
+## Example
+Q: A 2 kg drone needs to climb at 1 m/s². What thrust does it need?
+- Net force: $2\times1 = 2$ N
+- Weight: $2\times9.81 = 19.6$ N
+A: 21.6 N.
+
+## Check
+Q: What pushes a drone upward?
++ The air, reacting to being pushed down by the propellers
+- The battery
+- Gravity
+W: That is Newton's third law.
+
+# energy-conservation: Conservation of energy
+kind: law
+level: 1
+needs: energy
+see: kvl, efficiency, lenz-law
+> Energy is never created or destroyed. It only changes form.
+
+The total energy of a closed system stays constant. This is the first law of thermodynamics, and it is the most useful check in engineering. If your sums show more power out than in, the sums are wrong.
+
+It sits behind [[kvl|Kirchhoff's voltage law]], [[lenz-law|Lenz's law]], and every efficiency figure on this board. "Lost" energy is not gone. It became heat.
+
+## Math
+$$E_{in} = E_{out}+E_{\text{stored}}+E_{\text{heat}}$$ Energy balance.
+
+## Example
+Q: A motor takes 100 W, and 88 W reaches the propeller. Where is the rest?
+- $100-88$
+A: 12 W becomes heat in the windings, ESC and bearings.
+
+## Check
+Q: An engineer claims a converter gives 12 W out from 10 W in. What is true?
++ It is impossible
+- It is very efficient
+- It is possible at high frequency
+W: Voltage can rise, but energy cannot appear from nowhere.

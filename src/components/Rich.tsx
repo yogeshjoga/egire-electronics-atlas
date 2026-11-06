@@ -45,7 +45,7 @@ function Term({ name, shown }: { name: string; shown: string }) {
 
 export function Inline({ text }: { text: string }) {
   const open = useContext(OpenConcept)
-  const parts = useMemo(() => text.split(/(\$[^$]+\$|\*\*[^*]+\*\*|\[\[[^\]]+\]\]|\{\{[^}]+\}\})/g), [text])
+  const parts = useMemo(() => text.split(/(\$[^$]+\$|\*\*[^*]+\*\*|\[\[[^\]]+\]\]|\{\{[^}]+\}\}|\[[^\]]+\]\((?:https:\/\/|#\/)[^)]+\))/g), [text])
   return (
     <>
       {parts.map((p, i) => {
@@ -54,6 +54,11 @@ export function Inline({ text }: { text: string }) {
         if (p.startsWith('{{')) {
           const [name, shown] = p.slice(2, -2).split('::')
           return <Term key={i} name={name} shown={shown} />
+        }
+        const link = p.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
+        if (link) {
+          const external = link[2].startsWith('https://')
+          return <a key={i} className="xref" href={link[2]} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>{link[1]}</a>
         }
         if (p.startsWith('[[')) {
           const [id, label] = p.slice(2, -2).split('|')

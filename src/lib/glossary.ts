@@ -23,7 +23,7 @@ export function buildMatcher(words: Word[]): Matcher {
 }
 
 // Skip maths, links and table header rows; everything else is plain prose.
-const PROTECTED = /(\$[^$]+\$|\[\[[^\]]+\]\]|\{\{[^}]+\}\})/g
+const PROTECTED = /(\$[^$]+\$|\[\[[^\]]+\]\]|\{\{[^}]+\}\}|\[[^\]]+\]\([^)]+\))/g
 
 /**
  * Marks the first use of each word with {{name::text}} (no bar, as bars split table cells), so a lesson explains a word

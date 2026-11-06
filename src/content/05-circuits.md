@@ -61,6 +61,8 @@ A schematic shows what connects to what, and nothing about physical position. Le
 
 Signals flow left to right, with higher voltage at the top. A dot means wires join; a plain crossing does not.
 
+See every symbol, with when to use it, on the [Symbols page](#/symbols).
+
 # series: Series circuits
 kind: concept
 level: 1
