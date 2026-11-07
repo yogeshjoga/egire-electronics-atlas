@@ -17,7 +17,7 @@ export function splitGuide(raw: string) {
   })
 }
 
-function Guide({ raw }: { raw: string }) {
+export function Guide({ raw }: { raw: string }) {
   const parts = useMemo(() => {
     const seen = new Set<string>()
     return splitGuide(raw).map((p) => ({ title: p.title, body: annotate(p.body, matcher, seen, '') }))

@@ -74,7 +74,14 @@ export function Lesson({ c, learned, open, toggle, close }: Props) {
   const t = useMemo(() => {
     const seen = new Set<string>()
     const mark = (s: string) => annotate(s, matcher, seen, c.id)
-    return { summary: mark(c.summary), nature: mark(c.nature), eng: mark(c.eng), trap: mark(c.trap), lab: mark(c.lab), apply: mark(c.apply) }
+    return {
+      summary: mark(c.summary), nature: mark(c.nature), eng: mark(c.eng),
+      math: c.math.map((m) => ({ ...m, note: mark(m.note) })),
+      examples: c.examples.map((e) => ({ q: mark(e.q), steps: e.steps.map(mark), a: mark(e.a) })),
+      trap: mark(c.trap), lab: mark(c.lab), apply: mark(c.apply),
+      // Answer options are buttons, so they stay plain.
+      checks: c.checks.map((k) => ({ ...k, q: mark(k.q), why: mark(k.why) })),
+    }
   }, [c])
 
   const chain = rootChain(graph, c.id)
@@ -129,7 +136,7 @@ export function Lesson({ c, learned, open, toggle, close }: Props) {
         {c.math.length > 0 && (
           <Section title="The maths">
             <div className="formulas">
-              {c.math.map((m, i) => (
+              {t.math.map((m, i) => (
                 <div key={i} className="formula"><Tex src={m.tex} display />{m.note && <p><Inline text={m.note} /></p>}</div>
               ))}
             </div>
@@ -137,14 +144,14 @@ export function Lesson({ c, learned, open, toggle, close }: Props) {
         )}
         {c.examples.length > 0 && (
           <Section title={c.examples.length > 1 ? 'Worked examples' : 'Worked example'}>
-            {c.examples.map((e, i) => <WorkedExample key={c.id + i} ex={e} />)}
+            {t.examples.map((e, i) => <WorkedExample key={c.id + i} ex={e} />)}
           </Section>
         )}
         {c.trap && <section className="ds-section trap"><h3>Watch out</h3><Rich text={t.trap} /></section>}
         {c.lab && <Section title="At the bench"><Rich text={t.lab} /></Section>}
         {c.apply && <section className="ds-section apply"><h3>For EgireRobotics</h3><Rich text={t.apply} /></section>}
         {c.checks.length > 0 && (
-          <Section title="Check yourself">{c.checks.map((q, i) => <Question key={c.id + i} q={q} />)}</Section>
+          <Section title="Check yourself">{t.checks.map((q, i) => <Question key={c.id + i} q={q} />)}</Section>
         )}
 
         <section className="ds-section links">

@@ -189,3 +189,32 @@ ADC, ADCs | adc | A circuit that converts a voltage into a number.
 PWM | pwm | Switching on and off quickly, so the average sets the output.
 EMI | emi | Electrical noise that disturbs other circuits.
 LiPo | lipo | A lithium polymer battery, the usual drone power source.
+elementary charge, elementary charges | elementary-charge | The smallest amount of charge that can exist on its own: the size of the charge on one electron or one proton.
+elementary particle, elementary particles | standard-model | A particle with no smaller parts inside it, as far as we know.
+multiple, multiples | - | A number times a whole number, such as 2, 4 or 6 for 2.
+reciprocal | conductance | One divided by a number. The reciprocal of 4 is 1/4.
+exponent, exponents | scientific-notation | The small raised number showing how many times to multiply, as in 10³.
+logarithm, logarithms | logarithms-db | The power a base must be raised to. Log base 10 of 1000 is 3.
+derivative | derivative | The rate at which something changes at one moment.
+integral | integral | The total built up over time: the area under a curve.
+flux | magnetic-flux | The total amount of a field passing through an area.
+vector | motion | A quantity with both size and direction.
+radian, radians | trigonometry | A unit of angle. A full circle is 2π radians.
+quantum | quantum-mechanics | The smallest possible step of something, such as energy.
+atomic number | atom | The number of protons in an atom.
+mole | faraday-electrolysis | A counting unit for atoms: about 6.02 × 10²³ of them.
+constant | - | A number that does not change.
+equilibrium | pn-junction | A balanced state where nothing changes overall.
+phase angle | phase | How far one wave is shifted from another.
+amplifier, amplifiers | amplifier | A circuit that makes a signal larger.
+regulator, regulators | linear-regulator | A circuit that holds a steady voltage.
+converter, converters | smps-idea | A circuit that changes one voltage into another.
+sensor, sensors | imu-sensors | A device that turns a physical quantity into a signal.
+transceiver, transceivers | radio-link | A chip that both transmits and receives.
+LNA | noise | Low-noise amplifier: boosts weak radio signals.
+SoC | soc-architecture | System on chip: a whole computer on one chip.
+NPU | npu | A chip block built to run neural networks.
+ELRS | radio-link | ExpressLRS: an open-source control radio link.
+VTX | em-waves | Video transmitter: sends camera video to goggles.
+OSD | mcu | On-screen display: text drawn over the video.
+GNSS | nav-sensors | Satellite positioning, including GPS.

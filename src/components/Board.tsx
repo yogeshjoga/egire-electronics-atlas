@@ -95,7 +95,8 @@ export function Board({ selected, learned, ready, focusPhase, onSelect, onPhaseI
   const fit = useCallback((x: number, y: number, w: number, h: number, maxK = 1.1, minK = 0, animate = true) => {
     const el = svg.current!
     const b = el.getBoundingClientRect()
-    const top = 58
+    // The toolbar wraps on narrow screens, so leave room for its real height.
+    const top = (el.parentElement?.querySelector('.board-tools')?.getBoundingClientRect().height ?? 40) + 20
     const availW = b.width - 40
     const availH = b.height - top - 24
     const k = Math.max(minK, Math.min(availW / w, availH / h, maxK))

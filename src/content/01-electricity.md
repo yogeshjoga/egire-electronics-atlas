@@ -34,7 +34,9 @@ level: 1
 needs: electric-charge
 > The smallest free unit of charge: exactly 1.602176634 × 10⁻¹⁹ C.
 
-All free charge comes in whole-number multiples of $e$. Since 2019, $e$ has been a fixed exact number that helps define the ampere. Millikan's oil-drop experiment first measured it in 1909.
+Think of it as the smallest coin of electricity. You can't pay with half a rupee coin if the rupee is the smallest coin: you can only have 1, 2, 3 and so on. Charge works the same way. One electron carries exactly one unit, negative. One proton carries exactly one unit, positive. That one unit is called the **elementary charge**, and it's written $e$.
+
+So all free charge comes in whole-number multiples of $e$, such as $1e$, $2e$ or $3e$, never $1.5e$. Since 2019, $e$ has been a fixed exact number that helps define the ampere. Millikan's oil-drop experiment first measured it in 1909.
 
 ## Math
 $$e = 1.602176634\times10^{-19}\ \text{C}$$ Exact by definition.

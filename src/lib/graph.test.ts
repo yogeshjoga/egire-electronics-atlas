@@ -8,6 +8,7 @@ import { VIZ_IDS } from '../viz/ids'
 import { annotate, buildMatcher, parseGlossary } from './glossary'
 import { searchConcepts } from './search'
 import { TOOL_GROUPS, PRIORITIES, parseTools } from './tools'
+import { DRONE_CATEGORIES, SENSOR_LESSONS } from './parts'
 
 const dir = join(__dirname, '../content')
 const g = buildGraph(readdirSync(dir).map((f) => readFileSync(join(dir, f), 'utf8')))
@@ -98,6 +99,41 @@ describe('knowledge graph integrity', () => {
 function inline(s: string) {
   return [...s.matchAll(/\$([^$]+)\$/g)].map((m) => m[1])
 }
+
+describe('components', () => {
+  const data = JSON.parse(readFileSync(join(__dirname, '../parts/sensors.json'), 'utf8'))
+  const guides = ['types', 'fpv', 'ai', 'selection'].map((n) => readFileSync(join(__dirname, `../parts/${n}.md`), 'utf8'))
+
+  it('has all 300 catalogue sensors, numbered 1 to 300', () => {
+    expect(data.sensors.map((s: { n: number }) => s.n)).toEqual(Array.from({ length: 300 }, (_, i) => i + 1))
+  })
+  it('has 30 categories of 10', () => {
+    expect(data.categories.length).toBe(30)
+    for (const c of data.categories) expect(data.sensors.filter((s: { category: string }) => s.category === c).length, c).toBe(10)
+  })
+  it('has every field filled in for every sensor', () => {
+    for (const s of data.sensors) for (const k of ['name', 'measures', 'why', 'uses', 'when', 'example']) expect(s[k], `${s.n} ${k}`).not.toBe('')
+  })
+  it('links only to real lessons and categories', () => {
+    for (const [c, ids] of Object.entries(SENSOR_LESSONS)) {
+      expect(data.categories, c).toContain(c)
+      expect(ids.filter((id) => !g.byId.has(id)), c).toEqual([])
+    }
+    for (const c of DRONE_CATEGORIES) expect(data.categories).toContain(c)
+    const refs = guides.flatMap((t) => [...t.matchAll(/\[\[([a-z0-9-]+)/g)].map((m) => m[1]))
+    expect(refs.filter((id) => !g.byId.has(id))).toEqual([])
+  })
+  it('renders all guide maths', () => {
+    const bad: string[] = []
+    for (const t of guides) for (const tex of inline(t)) {
+      try { katex.renderToString(tex, { throwOnError: true }) } catch { bad.push(tex) }
+    }
+    expect(bad).toEqual([])
+  })
+  it('cites sources for FPV and AI parts', () => {
+    for (const t of [guides[1], guides[2]]) expect((t.match(/\]\(https:\/\//g) ?? []).length).toBeGreaterThan(3)
+  })
+})
 
 describe('tools library', () => {
   const tools = parseTools(readFileSync(join(__dirname, '../tools/tools.md'), 'utf8'))
@@ -191,6 +227,9 @@ describe('glossary', () => {
   })
   it('has a definition for every word', () => {
     expect(list.filter((w) => w.def.length < 10).map((w) => w.name)).toEqual([])
+  })
+  it('defines elementary charge', () => {
+    expect(annotate('the elementary charge.', m, new Set(), 'x')).toContain('{{elementary charge::elementary charge}}')
   })
   it('marks only the first use of a word', () => {
     expect(annotate('Mass and mass again.', m, new Set(), 'x')).toBe('{{mass::Mass}} and mass again.')

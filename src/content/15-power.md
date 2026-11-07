@@ -478,3 +478,32 @@ A: About 2.3 W.
 
 ## EgireRobotics
 Airflow raises $h$ many times over, which is why ESCs that are fine in flight overheat on the bench.
+
+# buck-boost: Buck-boost and isolated converters
+kind: component
+level: 3
+needs: buck, boost, transformer
+> Topologies that go up, down, or across an isolation barrier.
+
+A buck only steps down and a boost only steps up. Sometimes the input crosses the output. A single Li-ion cell runs from 4.2 V down to about 3 V, yet you may want a steady 3.3 V, so you need both.
+
+- **Inverting buck-boost:** simple, but the output is negative.
+- **SEPIC:** a positive output above or below the input.
+- **Four-switch buck-boost:** efficient, and used in many modern chips.
+- **Flyback and forward:** add a transformer for isolation, as in phone chargers.
+
+## Math
+$$V_{out} = -V_{in}\frac{D}{1-D}$$ Inverting buck-boost.
+
+## Example
+Q: What duty gives $-12$ V from a 12 V input?
+- $12 = 12\times D/(1-D)$
+- $D = 1-D$
+A: $D = 0.5$.
+
+## Check
+Q: When do you need a buck-boost rather than a buck?
++ When the input can go above or below the output
+- When the input is always higher
+- When the load is very small
+W: A buck can only step down.

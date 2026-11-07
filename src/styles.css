@@ -373,6 +373,24 @@ kbd { font: inherit; padding: 0 6px; margin-left: 6px; border-radius: 3px; backg
 .panel-note b { color: var(--gold); font-weight: 600; font-size: 18px; }
 .panel-note .sim-seg { margin-top: 6px; }
 
+.lede.fine { margin-top: 18px; font-size: 16px; }
+.sensor-lessons { margin-bottom: 8px; }
+.sensor-list { display: grid; gap: 3px; }
+.sensor-list details { border-radius: 5px; background: var(--mask-deep); }
+.sensor-list details[open] { background: var(--paper); color: var(--ink); }
+.sensor-list summary { display: grid; grid-template-columns: 38px minmax(150px, 280px) 1fr; gap: 10px; align-items: baseline; padding: 6px 12px; cursor: pointer; list-style: none; }
+.sensor-list summary::-webkit-details-marker { display: none; }
+.sensor-list summary:hover b { color: var(--gold); }
+.sensor-list details[open] summary b { color: var(--ink); }
+.sensor-list summary span { color: var(--silk-dim); font-size: 15px; }
+.sensor-list details[open] summary span, .sensor-list details[open] summary em { color: var(--ink-soft); }
+.sensor-list summary b { font-weight: 600; }
+.sensor-list summary em { font-style: normal; font-size: 15.5px; color: var(--silk-dim); }
+.sensor-list dl { margin: 0; padding: 2px 14px 10px 60px; font: 400 16px/1.45 var(--read); }
+.sensor-list dl > div { display: grid; grid-template-columns: 130px 1fr; gap: 10px; padding: 4px 0; border-top: 1px solid var(--rule); }
+.sensor-list dt { font: 500 15.5px var(--ui); color: var(--ink-soft); }
+.sensor-list dd { margin: 0; }
+
 /* Search */
 .search-back { position: fixed; inset: 0; z-index: 30; padding: 9vh 14px 14px; background: rgba(3, 20, 16, .72); }
 .search { max-width: 620px; margin: 0 auto; background: var(--paper); color: var(--ink); border-radius: 8px; overflow: hidden; }
@@ -405,6 +423,10 @@ kbd { font: inherit; padding: 0 6px; margin-left: 6px; border-radius: 3px; backg
   .page h1 { font-size: 32px; }
   .bars button { grid-template-columns: 130px 1fr 34px; }
   .word-list > div { grid-template-columns: 1fr; gap: 0; }
+  .sensor-list summary { grid-template-columns: 32px 1fr; }
+  .sensor-list summary em { grid-column: 2; }
+  .sensor-list dl { padding-left: 14px; }
+  .sensor-list dl > div { grid-template-columns: 1fr; gap: 0; }
   .sym-layout, .guide { grid-template-columns: minmax(0, 1fr); }
   .sym-detail, .guide nav { position: static; }
   .sym-detail { order: -1; margin-top: 0; }
