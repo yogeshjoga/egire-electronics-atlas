@@ -217,7 +217,9 @@ kbd { font: inherit; padding: 0 6px; margin-left: 6px; border-radius: 3px; backg
 .sim-stage { display: block; width: 100%; height: auto; background: var(--mask-deep); border-radius: 5px; margin-bottom: 8px; }
 .sim-t { font: 400 14px var(--ui); fill: var(--silk-dim); }
 .sim-two { display: grid; grid-template-columns: 230fr 290fr; gap: 6px; }
-.sim-ctl { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px 16px; margin: 8px 0; }
+.sim-ctl { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0; }
+.sim-ctl > .sim-slider { flex: 1 1 190px; min-width: 0; }
+.sim-ctl > .sim-seg { flex: 1 1 100%; }
 .sim-slider { display: grid; grid-template-columns: 1fr auto; gap: 0 8px; }
 .sim-slider label { color: var(--silk-dim); }
 .sim-slider output { color: var(--gold); font-weight: 500; }

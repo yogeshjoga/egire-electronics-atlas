@@ -27,6 +27,7 @@ export function useTime(running = true) {
   return t
 }
 
+/** Drawing happens in a fixed 520-wide space, so it fills the canvas on any screen density. */
 export function useCanvas(draw: (ctx: CanvasRenderingContext2D, w: number, h: number, dt: number) => void) {
   const ref = useRef<HTMLCanvasElement>(null)
   const drawRef = useRef(draw)
@@ -34,10 +35,10 @@ export function useCanvas(draw: (ctx: CanvasRenderingContext2D, w: number, h: nu
   useEffect(() => {
     const cv = ref.current!
     const ctx = cv.getContext('2d')!
-    const dpr = Math.min(devicePixelRatio || 1, 2)
-    const w = cv.width / dpr
-    const h = cv.height / dpr
-    ctx.scale(dpr, dpr)
+    const w = 520
+    const scale = cv.width / w
+    const h = cv.height / scale
+    ctx.scale(scale, scale)
     if (prefersReduced()) { for (let i = 0; i < 60; i++) drawRef.current(ctx, w, h, 0.016); return }
     let raf = 0
     let last = performance.now()
@@ -51,6 +52,30 @@ export function useCanvas(draw: (ctx: CanvasRenderingContext2D, w: number, h: nu
     return () => cancelAnimationFrame(raf)
   }, [])
   return ref
+}
+
+/** A straight arrow. The head stays the same size however short the line is. */
+export function Arrow({ x1, y1, x2, y2, color = C.gold, width = 3, head = 11 }: {
+  x1: number; y1: number; x2: number; y2: number; color?: string; width?: number; head?: number
+}) {
+  const len = Math.hypot(x2 - x1, y2 - y1)
+  if (len < 1) return null
+  const ux = (x2 - x1) / len
+  const uy = (y2 - y1) / len
+  const bx = x2 - ux * head
+  const by = y2 - uy * head
+  const hw = head * 0.55
+  return (
+    <g>
+      <line x1={x1} y1={y1} x2={bx} y2={by} stroke={color} strokeWidth={width} strokeLinecap="round" />
+      <polygon points={`${x2},${y2} ${bx - uy * hw},${by + ux * hw} ${bx + uy * hw},${by - ux * hw}`} fill={color} />
+    </g>
+  )
+}
+
+/** A small arrowhead sitting on a wire or field line. Angle in degrees, 0 points right. */
+export function Chevron({ x, y, angle = 0, color = C.gold, size = 8 }: { x: number; y: number; angle?: number; color?: string; size?: number }) {
+  return <polygon points={`${size},0 ${-size * 0.7},${size * 0.75} ${-size * 0.7},${-size * 0.75}`} fill={color} transform={`translate(${x} ${y}) rotate(${angle})`} />
 }
 
 export function Sim({ children, note }: { children: ReactNode; note?: ReactNode }) {

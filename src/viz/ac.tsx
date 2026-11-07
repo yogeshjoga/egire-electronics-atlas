@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { C, Controls, Out, Plot, Seg, Sim, Slider, Stage, useTime } from './kit'
+import { Arrow, C, Controls, Out, Plot, Seg, Sim, Slider, Stage, useTime } from './kit'
 import { lowpassMag, resonance, seriesRlcZ, si } from '../lib/physics'
 
 export function PhasorViz() {
@@ -144,6 +144,7 @@ export function InductionViz() {
           <rect x={0} y={-14} width={46} height={28} fill={C.cyan} />
           <text x={-23} y={6} textAnchor="middle" fontWeight={600} fill={C.mask}>N</text>
           <text x={23} y={6} textAnchor="middle" fontWeight={600} fill={C.mask}>S</text>
+          {Math.abs(speed) > 12 && <Arrow x1={0} y1={-26} x2={Math.sign(speed) * (14 + Math.abs(speed) / 6)} y2={-26} />}
         </g>
       </Stage>
       <Plot h={130} x={[t0, t0 + 4.2]} y={[-6, 6]} series={[{ pts: hist.current, color: C.gold }]} xlabel="Time" ylabel="Induced EMF" label="Induced voltage against time" divs={[8, 4]} />
@@ -202,19 +203,20 @@ export function EscViz() {
   const coilAngle: Record<string, number> = { A: -90, B: 30, C: 150 }
   // The stator field jumps 60° per step; the rotor's north pole trails it by 60° to 120°.
   const rotor = elec * 60 - 150
-  const cx = 150, cy = 120
+  const cx = 150, cy = 128, R = 96
+  const fieldAngle = ((-120 + step * 60) * Math.PI) / 180
   const state = (p: string) => (p === hi ? '+' : p === lo ? '−' : 'Off')
   return (
-    <Sim note="Six steps per electrical turn. At each step one phase is driven high, one low, and the third floats, which is where the ESC listens for back-EMF.">
+    <Sim note="Six steps per electrical turn. At each step one phase is driven high, one low, and the third floats, which is where the ESC listens for back-EMF. The white arrow is the stator's magnetic field, and the rotor chases it.">
       <Stage h={240} label="Three-phase motor commutation">
-        <circle cx={cx} cy={cy} r={104} fill="none" stroke={C.grid} strokeWidth={8} />
+        <circle cx={cx} cy={cy} r={R} fill="none" stroke={C.grid} strokeWidth={8} />
         {(['A', 'B', 'C'] as const).map((p) => {
           const a = (coilAngle[p] * Math.PI) / 180
           const col = p === hi ? C.gold : p === lo ? C.cyan : C.dim
           return (
             <g key={p}>
-              <line x1={cx + 60 * Math.cos(a)} y1={cy + 60 * Math.sin(a)} x2={cx + 100 * Math.cos(a)} y2={cy + 100 * Math.sin(a)} stroke={col} strokeWidth={18} />
-              <text x={cx + 118 * Math.cos(a)} y={cy + 118 * Math.sin(a) + 5} textAnchor="middle" className="sim-t">{p}</text>
+              <line x1={cx + 56 * Math.cos(a)} y1={cy + 56 * Math.sin(a)} x2={cx + (R - 4) * Math.cos(a)} y2={cy + (R - 4) * Math.sin(a)} stroke={col} strokeWidth={18} />
+              <text x={cx + (R + 15) * Math.cos(a)} y={cy + (R + 15) * Math.sin(a) + 5} textAnchor="middle" className="sim-t">{p}</text>
             </g>
           )
         })}
@@ -223,6 +225,7 @@ export function EscViz() {
           <path d={`M${cx - 40} ${cy}A40 40 0 0 1 ${cx + 40} ${cy}Z`} fill={C.red} />
           <path d={`M${cx - 40} ${cy}A40 40 0 0 0 ${cx + 40} ${cy}Z`} fill={C.cyan} />
         </g>
+        <Arrow x1={cx} y1={cy} x2={cx + 50 * Math.cos(fieldAngle)} y2={cy + 50 * Math.sin(fieldAngle)} color={C.silk} width={4} head={13} />
         {(['A', 'B', 'C'] as const).map((p, i) => (
           <g key={p} transform={`translate(310 ${44 + i * 60})`}>
             <text x={0} y={5} className="sim-t">Phase {p}</text>

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { C, Controls, Out, Plot, Seg, Sim, Slider, Stage, useTime } from './kit'
+import { C, Chevron, Controls, Out, Plot, Seg, Sim, Slider, Stage, useTime } from './kit'
 import { divider, flightMinutes, parallel, rcCharge, si, twoSourceNode, wireResistance } from '../lib/physics'
 
 /** Animated dashes moving along a path, showing conventional current. */
@@ -44,7 +44,13 @@ export function OhmViz() {
         <Flow d={loop} speed={Math.min(i, 9) * 0.8} t={t} />
         <Battery x={110} y={115} label={`${v.toFixed(1)} V`} />
         <rect x={382} y={85} width={56} height={60} rx={4} fill={C.copper} opacity={0.15 + hot * 0.85} />
-        <Resistor x={410} y={90} vertical label={`${r.toFixed(1)} Ω`} />
+        <Resistor x={410} y={90} vertical />
+        <text x={446} y={120} fontSize={15} fontWeight={500} fill={C.silk}>{r.toFixed(1)} Ω</text>
+        {i > 0 && <>
+          <Chevron x={260} y={40} />
+          <Chevron x={260} y={190} angle={180} />
+          <text x={260} y={28} textAnchor="middle" className="sim-t" style={{ fill: C.gold }}>Current I</text>
+        </>}
         <text x={260} y={120} textAnchor="middle" fontSize={32} fontWeight={600} fill={C.gold}>{si(i, 'A')}</text>
       </Stage>
       <Controls>
@@ -105,7 +111,9 @@ export function SeriesParallelViz() {
           <g>
             <path d="M70 30H450V180H70V30" fill="none" stroke={C.grid} strokeWidth={5} />
             <Flow d="M70 30H450V180H70V30" speed={Math.min(IT, 6)} t={t} />
-            <Battery x={70} y={105} label="" />
+            <Battery x={70} y={105} label={`${v} V`} />
+            <Chevron x={260} y={180} angle={180} />
+            <Chevron x={450} y={105} angle={90} />
             {rs.map((r, i) => <Resistor key={i} x={130 + i * 110} y={30} label={`${r} Ω: ${si(IT * r, 'V')}`} />)}
           </g>
         ) : (
@@ -120,10 +128,11 @@ export function SeriesParallelViz() {
                   <Resistor x={x} y={80} vertical label="" />
                   <text x={x + 16} y={100} className="sim-t">{r} Ω</text>
                   <text x={x + 16} y={118} className="sim-t" style={{ fill: C.gold }}>{si(v / r, 'A')}</text>
+                  <Chevron x={x} y={160} angle={90} />
                 </g>
               )
             })}
-            <Battery x={70} y={105} label="" />
+            <Battery x={70} y={105} label={`${v} V`} />
           </g>
         )}
       </Stage>
@@ -163,6 +172,9 @@ export function KirchhoffViz() {
         <Resistor x={335} y={40} label={`R3: I₃ = ${si(s.i3, 'A')}`} />
         <Resistor x={260} y={90} vertical />
         <text x={276} y={120} className="sim-t">R2: I₂ = {si(s.i2, 'A')}</text>
+        <Chevron x={100} y={40} angle={s.i1 >= 0 ? 0 : 180} />
+        <Chevron x={420} y={40} angle={s.i3 >= 0 ? 180 : 0} />
+        <Chevron x={260} y={165} angle={90} />
         <circle cx={260} cy={40} r={7} fill={C.gold} />
         <text x={260} y={22} textAnchor="middle" fontSize={15} fontWeight={600} fill={C.gold}>A = {s.va.toFixed(2)} V</text>
       </Stage>
@@ -284,7 +296,7 @@ export function BatteryViz() {
     <Sim note="The default values are the lesson's example. Flight time assumes 80% usable capacity, so treat it as a first estimate.">
       <Stage h={92} label="Power budget bar">
         {slices.map(([n, p, c]) => {
-          const w = (p / total) * 480
+          const w = total > 0 ? (p / total) * 480 : 0
           const el = <rect key={n} x={x} y={14} width={Math.max(w, 1)} height={30} fill={c} />
           x += w
           return el
@@ -304,7 +316,7 @@ export function BatteryViz() {
       </Controls>
       <Out items={[
         ['Nominal energy', `${wh.toFixed(1)} Wh`],
-        ['Flight time', `${mins.toFixed(1)} min`],
+        ['Flight time', total > 0 ? `${mins.toFixed(1)} min` : 'No load set'],
         ['Full charge', `${(s * 4.2).toFixed(1)} V`],
         ['Battery limit', `${maxA.toFixed(0)} A`, amps > maxA],
         ['Voltage sag', `${sag.toFixed(2)} V`],

@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, type PointerEvent as RPE } from 'react'
-import { C, Controls, Out, Seg, Sim, Slider, Stage, useCanvas, useTime } from './kit'
+import { Arrow, C, Chevron, Controls, Out, Seg, Sim, Slider, Stage, useCanvas, useTime } from './kit'
 import { E_CHARGE, ELEMENTS, ELEMENT_NAMES, coulombForce, driftVelocity, electronConfig, shells, si } from '../lib/physics'
 
 const RUNGS: { name: string; size: string; m: number; text: string }[] = [
@@ -102,24 +102,21 @@ export function MassViz() {
   const g = WORLDS[w][1]
   const a = f / m
   const el = Math.max(t - t0, 0)
-  const x = Math.min(0.5 * a * el * el * 8, 400)
+  const x = Math.min(0.5 * a * el * el * 8, 350)
   const side = 26 + Math.sqrt(m) * 14
-  const arrow = Math.min(g * m * 1.3, 44)
+  const arrow = Math.min(8 + g * m * 1.3, 46)
+  const push = 14 + f * 0.8
   return (
     <Sim note="Same push, more mass, less acceleration: that is inertia. Change the world and the weight changes, but the mass, and how hard it is to push, stay the same.">
       <Stage h={190} label="A block being pushed along the ground">
         <line x1={20} x2={500} y1={130} y2={130} stroke={C.dim} strokeWidth={2} />
-        <g transform={`translate(${30 + x} 0)`}>
+        <g transform={`translate(${64 + x} 0)`}>
+          <Arrow x1={-push - 4} y1={130 - side / 2} x2={-4} y2={130 - side / 2} width={4} head={12} />
           <rect x={0} y={130 - side} width={side} height={side} rx={3} fill={C.gold} />
           <text x={side / 2} y={130 - side / 2 + 5} textAnchor="middle" fontWeight={600} fill={C.mask}>{m.toFixed(1)} kg</text>
-          {g > 0 && (
-            <g stroke={C.cyan} fill={C.cyan} strokeWidth={3}>
-              <line x1={side / 2} y1={130} x2={side / 2} y2={130 + arrow} />
-              <path d={`M${side / 2} ${130 + arrow + 8}l-6 -10h12z`} />
-            </g>
-          )}
+          {g > 0 && <Arrow x1={side / 2} y1={132} x2={side / 2} y2={132 + arrow} color={C.cyan} />}
         </g>
-        <text x={20} y={22} className="sim-t">{WORLDS[w][0]}. The blue arrow is weight, the pull of gravity.</text>
+        <text x={20} y={22} className="sim-t">{WORLDS[w][0]}. Gold arrow: your push. Blue arrow: weight, the pull of gravity.</text>
       </Stage>
       <Controls>
         <Slider label="Mass" value={m} min={0.1} max={20} step={0.1} onChange={setM} show={`${m.toFixed(1)} kg`} />
@@ -246,28 +243,33 @@ export function CoulombViz() {
   const [r, setR] = useState(1)
   const f = coulombForce(q1 * 1e-6, q2 * 1e-6, r)
   const attract = q1 * q2 < 0
-  const x1 = 260 - r * 55, x2 = 260 + r * 55
-  const len = Math.min(90, 10 + Math.log10(1 + f * 100) * 26)
-  const dir = attract ? 1 : -1
-  const arrow = (x: number, d: number) => (
-    <g stroke={C.gold} strokeWidth={3} fill={C.gold}>
-      <line x1={x} y1={110} x2={x + d * len} y2={110} />
-      <path d={`M${x + d * (len + 9)} 110l${-d * 11} -6v12z`} />
-    </g>
-  )
+  const cy = 92
+  const gap = 124 + ((r - 0.25) / 2.75) * 176
+  const x1 = 260 - gap / 2, x2 = 260 + gap / 2
+  const r1 = 16 + Math.abs(q1) * 2.4, r2 = 16 + Math.abs(q2) * 2.4
+  // Arrows start at the edge of each charge, and both are always equal: Newton's third law.
+  const want = 20 + Math.min(1, Math.log10(1 + f * 1000) / 3.5) * 58
+  const len = attract ? Math.min(want, (gap - r1 - r2) / 2 - 5) : want
   const zero = q1 === 0 || q2 === 0
+  const s1 = attract ? x1 + r1 : x1 - r1, s2 = attract ? x2 - r2 : x2 + r2
+  const d1 = attract ? 1 : -1
   return (
-    <Sim note={zero ? 'A neutral object feels no Coulomb force.' : attract ? 'Opposite charges attract.' : 'Like charges repel.'}>
+    <Sim note={zero ? 'A neutral object feels no Coulomb force.' : `${attract ? 'Opposite charges attract.' : 'Like charges repel.'} Both arrows are always the same length, because each charge pushes on the other equally.`}>
       <Stage h={200} label="Two charges and the force between them">
-        {!zero && arrow(x1, dir)}
-        {!zero && arrow(x2, -dir)}
         {[[x1, q1], [x2, q2]].map(([x, q], i) => (
           <g key={i}>
-            <circle cx={x} cy={110} r={16 + Math.abs(q) * 2.4} fill={q > 0 ? C.pink : q < 0 ? C.cyan : C.dim} />
-            <text x={x} y={116} textAnchor="middle" fontSize={17} fontWeight={600} fill={C.mask}>{q > 0 ? `+${q}` : q}</text>
+            <circle cx={x} cy={cy} r={16 + Math.abs(q) * 2.4} fill={q > 0 ? C.pink : q < 0 ? C.cyan : C.dim} />
+            <text x={x} y={cy + 6} textAnchor="middle" fontSize={17} fontWeight={600} fill={C.mask}>{q > 0 ? `+${q}` : q}</text>
           </g>
         ))}
-        <text x={260} y={184} textAnchor="middle" className="sim-t">Separation {r.toFixed(2)} m</text>
+        {!zero && <>
+          <Arrow x1={s1} y1={cy} x2={s1 + d1 * len} y2={cy} width={4} head={13} />
+          <Arrow x1={s2} y1={cy} x2={s2 - d1 * len} y2={cy} width={4} head={13} />
+          <text x={s1 + (d1 * len) / 2} y={cy - 12} textAnchor="middle" className="sim-t" style={{ fill: C.gold }}>F</text>
+          <text x={s2 - (d1 * len) / 2} y={cy - 12} textAnchor="middle" className="sim-t" style={{ fill: C.gold }}>F</text>
+        </>}
+        <path d={`M${x1} 150v10M${x2} 150v10M${x1} 155H${x2}`} stroke={C.dim} strokeWidth={1.5} fill="none" />
+        <text x={260} y={180} textAnchor="middle" className="sim-t">Separation {r.toFixed(2)} m</text>
       </Stage>
       <Controls>
         <Slider label="Charge 1" value={q1} min={-5} max={5} step={1} onChange={setQ1} show={`${q1} µC`} />
@@ -290,7 +292,7 @@ function eField(qs: Q[], x: number, y: number) {
   return [ex, ey]
 }
 function fieldLines(qs: Q[], W: number, H: number) {
-  const lines: string[] = []
+  const lines: { d: string; hx: number; hy: number; ang: number }[] = []
   const pos = qs.filter((c) => c.q > 0)
   const seeds = pos.length ? pos : qs
   const sign = pos.length ? 1 : -1
@@ -300,16 +302,18 @@ function fieldLines(qs: Q[], W: number, H: number) {
       const a = (i / n) * 6.283 + 0.1
       let x = s.x + 16 * Math.cos(a), y = s.y + 16 * Math.sin(a)
       let d = `M${x.toFixed(1)} ${y.toFixed(1)}`
+      let hx = x, hy = y, ang = 0
       for (let k = 0; k < 340; k++) {
         const [ex, ey] = eField(qs, x, y)
         const m = Math.hypot(ex, ey) || 1
+        if (k === 22) { hx = x; hy = y; ang = (Math.atan2(ey, ex) * 180) / Math.PI }
         x += (sign * 3 * ex) / m
         y += (sign * 3 * ey) / m
         if (x < -6 || y < -6 || x > W + 6 || y > H + 6) break
         if (qs.some((c) => c !== s && Math.hypot(x - c.x, y - c.y) < 12)) break
         if (k % 2 === 0) d += `L${x.toFixed(1)} ${y.toFixed(1)}`
       }
-      lines.push(d)
+      lines.push({ d, hx, hy, ang })
     }
   }
   return lines
@@ -331,7 +335,8 @@ export function FieldViz() {
     <Sim note="Drag the charges. Lines leave + and end on −, and crowded lines mean a strong field.">
       <svg ref={svg} className="sim-stage" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Electric field lines around charges"
         onPointerMove={move} onPointerUp={() => (drag.current = null)} onPointerLeave={() => (drag.current = null)} style={{ touchAction: 'none' }}>
-        {lines.map((d, i) => <path key={i} d={d} fill="none" stroke={C.gold} strokeOpacity={0.65} strokeWidth={1.2} />)}
+        {lines.map((l, i) => <path key={i} d={l.d} fill="none" stroke={C.gold} strokeOpacity={0.65} strokeWidth={1.2} />)}
+        {lines.map((l, i) => <Chevron key={i} x={l.hx} y={l.hy} angle={l.ang} size={5} />)}
         {qs.map((c, i) => (
           <g key={i} style={{ cursor: 'grab' }} onPointerDown={(e) => { drag.current = i; (e.target as Element).setPointerCapture?.(e.pointerId) }}>
             <circle cx={c.x} cy={c.y} r={15} fill={c.q > 0 ? C.pink : C.cyan} />
@@ -381,6 +386,16 @@ export function DriftViz() {
   })
   return (
     <Sim note="Electrons zig-zag at about a million m/s and only slowly slide left, towards the + end. The motion here is exaggerated by a huge factor.">
+      <Stage h={52} label="Directions of the field and the electron drift">
+        <text x={22} y={33} fontSize={22} fontWeight={600} fill={C.pink}>+</text>
+        <text x={498} y={33} textAnchor="end" fontSize={22} fontWeight={600} fill={C.cyan}>−</text>
+        {i > 0 && <>
+          <Arrow x1={60} y1={18} x2={240} y2={18} />
+          <text x={250} y={23} className="sim-t" style={{ fill: C.gold }}>Electric field and current</text>
+          <Arrow x1={460} y1={38} x2={280} y2={38} color={C.cyan} />
+          <text x={270} y={43} textAnchor="end" className="sim-t" style={{ fill: C.cyan }}>Electron drift</text>
+        </>}
+      </Stage>
       <canvas ref={ref} className="sim-stage" width={1040} height={360} style={{ aspectRatio: '520/180' }} aria-label="Electrons drifting through a copper lattice" />
       <Controls>
         <Slider label="Current" value={i} min={0} max={60} step={1} onChange={setI} show={`${i} A`} />
@@ -418,7 +433,10 @@ export function BandsViz() {
         <rect x={120} y={midY + gapPx / 2 - (mat.gap ? 0 : 18)} width={280} height={232 - midY - gapPx / 2 + (mat.gap ? 0 : 18)} fill={C.copper} opacity={0.75} />
         <text x={130} y={26} className="sim-t">Conduction band</text>
         <text x={130} y={226} className="sim-t" fill={C.mask} style={{ fill: C.mask }}>Valence band (full)</text>
-        {mat.gap > 0 && <text x={260} y={midY + 5} textAnchor="middle" fontSize={14} fill={C.silk}>Gap {mat.gap} eV</text>}
+        {mat.gap > 0 && <>
+          <path d={`M408 ${midY - gapPx / 2}h8V${midY + gapPx / 2}h-8`} fill="none" stroke={C.gold} strokeWidth={1.5} />
+          <text x={424} y={midY + 5} fontSize={14} fontWeight={500} fill={C.gold}>Gap {mat.gap} eV</text>
+        </>}
         {Array.from({ length: excited }, (_, k) => {
           const x = 138 + ((k * 53) % 250)
           return <circle key={k} cx={x} cy={midY - gapPx / 2 - 10 - (k % 3) * 11} r={4} fill={C.cyan} />

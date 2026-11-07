@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { C, Controls, Out, Plot, Seg, Sim, Slider, Stage, useTime } from './kit'
+import { Arrow, C, Controls, Out, Plot, Seg, Sim, Slider, Stage, useTime } from './kit'
 import { adcLsb, aliasOf, depletionNm, mosfetId, shockley, si } from '../lib/physics'
 
 export function DopingViz() {
@@ -59,6 +59,10 @@ export function PnViz() {
         <rect x={20} y={14} width={240} height={90} fill={C.pink} opacity={0.45} />
         <rect x={260} y={14} width={240} height={90} fill={C.cyan} opacity={0.45} />
         <rect x={260 - wp / 2} y={14} width={wp} height={90} fill={C.mask} stroke={C.gold} />
+        {wp > 44 && <>
+          <Arrow x1={260 + wp / 2 - 8} y1={66} x2={260 - wp / 2 + 8} y2={66} />
+          <text x={260} y={54} textAnchor="middle" className="sim-t" style={{ fill: C.gold }}>Built-in field</text>
+        </>}
         <text x={40} y={36} fontSize={18} fontWeight={600} fill={C.silk}>P</text>
         <text x={470} y={36} fontSize={18} fontWeight={600} fill={C.silk}>N</text>
         <text x={260} y={122} textAnchor="middle" className="sim-t">Depletion region about {Math.round(w)} nm wide (illustrative doping)</text>

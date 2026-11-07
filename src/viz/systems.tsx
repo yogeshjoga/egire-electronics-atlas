@@ -18,11 +18,11 @@ export function DeadTimeViz() {
   const bodyLoss = 0.9 * amps * 2 * Math.max(dead - tOff, 0) * 1e-9 * f
   return (
     <Sim note={shoot ? 'Both switches are on at once. The battery is shorted through them, so current is limited only by loop resistance. This destroys MOSFETs.' : 'No overlap. During the gap, the load current flows through a body diode, which wastes a little power.'}>
-      <Plot h={190} x={[0, T]} y={[-0.2, 3.6]} divs={[10, 4]} series={[
+      <Plot h={190} x={[0, T]} y={[-0.2, 4.3]} divs={[10, 4]} series={[
         { pts: hi.map(([a, b]) => [a, b + 2.3]), color: C.gold },
         { pts: hiReal.map(([a, b]) => [a, b + 1.15]), color: C.copper, dash: '5 3' },
         { pts: lo, color: C.cyan },
-      ]} marks={shoot ? [{ x: loOn, color: C.red }, { x: 400 + tOff, color: C.red }] : []} xlabel="Time (ns)" ylabel="Gold high gate, orange high FET really on, blue low gate" label="Half-bridge gate timing" />
+      ]} marks={shoot ? [{ x: loOn, color: C.red }, { x: 400 + tOff, color: C.red }] : []} xlabel="Time (ns)" ylabel="High gate (gold), high FET really on (orange), low gate (blue)" label="Half-bridge gate timing" />
       <Controls>
         <Slider label="Dead time" value={dead} min={0} max={300} step={5} onChange={setDead} show={`${dead} ns`} />
         <Slider label="MOSFET turn-off delay" value={tOff} min={10} max={200} step={5} onChange={setTOff} show={`${tOff} ns`} />
@@ -48,15 +48,15 @@ export function ThermalViz() {
   return (
     <Sim note="Heat flows like current, and each thermal resistance drops temperature the way a resistor drops voltage. The biggest number, usually board or heatsink to air, is where the effort pays.">
       <Stage h={196} label="Temperature at each stage">
-        <line x1={20} x2={500} y1={y(limit)} y2={y(limit)} stroke={C.red} strokeDasharray="5 4" />
-        <text x={500} y={y(limit) - 5} textAnchor="end" className="sim-t">Limit {limit} °C</text>
         {steps.map(([n, v, c], i) => (
           <g key={n}>
-            <rect x={36 + i * 118} y={y(v)} width={82} height={180 - y(v)} fill={c} />
-            <text x={77 + i * 118} y={y(v) - 5} textAnchor="middle" fontSize={15} fontWeight={600} fill={C.silk}>{v.toFixed(0)} °C</text>
-            <text x={77 + i * 118} y={193} textAnchor="middle" className="sim-t">{n}</text>
+            <rect x={22 + i * 104} y={y(v)} width={82} height={180 - y(v)} fill={c} />
+            <text x={63 + i * 104} y={y(v) - 5} textAnchor="middle" fontSize={15} fontWeight={600} fill={C.silk}>{v.toFixed(0)} °C</text>
+            <text x={63 + i * 104} y={193} textAnchor="middle" className="sim-t">{n}</text>
           </g>
         ))}
+        <line x1={16} x2={510} y1={y(limit)} y2={y(limit)} stroke={C.red} strokeDasharray="5 4" />
+        <text x={510} y={y(limit) - 5} textAnchor="end" className="sim-t" style={{ fill: C.red }}>Limit {limit} °C</text>
       </Stage>
       <Controls>
         <Slider label="Power" value={p} min={0.1} max={30} step={0.1} onChange={setP} show={`${p.toFixed(1)} W`} />
