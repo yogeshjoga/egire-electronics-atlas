@@ -391,6 +391,17 @@ kbd { font: inherit; padding: 0 6px; margin-left: 6px; border-radius: 3px; backg
 .sensor-list dt { font: 500 15.5px var(--ui); color: var(--ink-soft); }
 .sensor-list dd { margin: 0; }
 
+pre.code { margin: 6px 0 12px; padding: 10px 14px; overflow-x: auto; border-radius: 6px; background: var(--mask-deep); color: var(--silk); font: 400 14.5px/1.5 Consolas, 'Cascadia Mono', monospace; }
+code.ic { padding: 0 4px; border-radius: 3px; background: #e2ebe5; font: 400 0.9em Consolas, 'Cascadia Mono', monospace; }
+.sub-tabs .seg-link { padding: 3px 10px; border-radius: 4px; background: var(--mask-lift); color: var(--silk); border: 1px solid var(--trace); text-decoration: none; }
+.sub-tabs .seg-link:hover { border-color: var(--silk-dim); }
+.sub-tabs .seg-link[aria-current] { background: var(--gold); border-color: var(--gold); color: var(--mask-deep); font-weight: 500; }
+.card-link { display: block; padding: 10px 13px; border: 1px solid var(--trace); border-radius: 6px; background: var(--mask-deep); color: var(--silk); text-decoration: none; }
+.card-link:hover { border-color: var(--gold); }
+.card-link b { display: block; font-weight: 600; }
+.card-link span { color: var(--silk-dim); font-size: 15.5px; }
+.card-link em { display: block; margin-top: 4px; font-style: normal; font-size: 14.5px; color: var(--gold); }
+
 /* Search */
 .search-back { position: fixed; inset: 0; z-index: 30; padding: 9vh 14px 14px; background: rgba(3, 20, 16, .72); }
 .search { max-width: 620px; margin: 0 auto; background: var(--paper); color: var(--ink); border-radius: 8px; overflow: hidden; }
@@ -403,7 +414,8 @@ kbd { font: inherit; padding: 0 6px; margin-left: 6px; border-radius: 3px; backg
 .search small { grid-column: 1 / -1; color: var(--ink-soft); font-size: 15px; }
 .none { padding: 14px 16px; }
 
-@media (max-width: 1240px) { .top { gap: 14px; } .brand span, .search-btn span { display: none; } .top nav a { padding: 6px 9px; } }
+@media (max-width: 1480px) { .top { gap: 12px; } .brand span, .search-btn span { display: none; } .top nav a { padding: 6px 8px; } }
+@media (max-width: 1180px) { .top nav { mask-image: linear-gradient(90deg, #000 88%, transparent); } }
 @media (max-width: 1100px) { .lesson, .lesson[data-wide] { width: 54vw; } .wide-toggle { display: none; } }
 @media (max-width: 860px) {
   .top { gap: 10px; padding: 0 10px; height: auto; min-height: 50px; flex-wrap: wrap; }

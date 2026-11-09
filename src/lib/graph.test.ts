@@ -9,6 +9,7 @@ import { annotate, buildMatcher, parseGlossary } from './glossary'
 import { searchConcepts } from './search'
 import { TOOL_GROUPS, PRIORITIES, parseTools } from './tools'
 import { DRONE_CATEGORIES, SENSOR_LESSONS } from './parts'
+import { list, parseCards } from './cards'
 
 const dir = join(__dirname, '../content')
 const g = buildGraph(readdirSync(dir).map((f) => readFileSync(join(dir, f), 'utf8')))
@@ -99,6 +100,46 @@ describe('knowledge graph integrity', () => {
 function inline(s: string) {
   return [...s.matchAll(/\$([^$]+)\$/g)].map((m) => m[1])
 }
+
+describe('boards and software', () => {
+  const files = ['boards', 'stacks', 'protocols', 'projects']
+  const sets = Object.fromEntries(files.map((n) => [n, parseCards(readFileSync(join(__dirname, `../boards/${n}.md`), 'utf8'))]))
+  const all = Object.values(sets).flat()
+  const ids = new Set(all.map((c) => c.id))
+
+  it('has unique ids across every list', () => expect(ids.size).toBe(all.length))
+  it('has a summary and content on every card', () => {
+    for (const c of all) {
+      expect(c.summary, c.id).not.toBe('')
+      expect(c.sections.length + c.steps.length, c.id).toBeGreaterThan(0)
+    }
+  })
+  it('links only to real lessons, boards, stacks and protocols', () => {
+    for (const c of all) {
+      expect(list(c.meta.lessons).filter((id) => !g.byId.has(id)), c.id).toEqual([])
+      expect(list(c.meta.boards).filter((id) => !sets.boards.some((b) => b.id === id)), c.id).toEqual([])
+      expect(list(c.meta.stacks).filter((id) => !sets.stacks.some((b) => b.id === id)), c.id).toEqual([])
+      expect(list(c.meta.protocols).filter((id) => !sets.protocols.some((b) => b.id === id)), c.id).toEqual([])
+    }
+  })
+  it('gives every project boards, software, lessons and steps', () => {
+    for (const p of sets.projects) {
+      for (const f of ['boards', 'stacks', 'lessons', 'level', 'parts']) expect(p.meta[f], `${p.id} ${f}`).toBeTruthy()
+      expect(p.steps.length, p.id).toBeGreaterThan(2)
+    }
+  })
+  it('has one right answer per check', () => {
+    for (const c of all) for (const k of c.checks) expect(k.correct, k.q).toBeGreaterThanOrEqual(0)
+  })
+  it('keeps code blocks closed', () => {
+    for (const n of files) expect((readFileSync(join(__dirname, `../boards/${n}.md`), 'utf8').match(/^```/gm) ?? []).length % 2, n).toBe(0)
+  })
+  it('never marks glossary words inside code', () => {
+    const m = buildMatcher(parseGlossary(readFileSync(join(__dirname, '../glossary/words.md'), 'utf8')))
+    expect(annotate('```\nvoltage = 5\n```', m, new Set(), 'x')).not.toContain('{{')
+    expect(annotate('call `voltage()` now', m, new Set(), 'x')).not.toContain('{{')
+  })
+})
 
 describe('components', () => {
   const data = JSON.parse(readFileSync(join(__dirname, '../parts/sensors.json'), 'utf8'))

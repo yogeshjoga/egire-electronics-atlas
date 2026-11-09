@@ -45,10 +45,11 @@ function Term({ name, shown }: { name: string; shown: string }) {
 
 export function Inline({ text }: { text: string }) {
   const open = useContext(OpenConcept)
-  const parts = useMemo(() => text.split(/(\$[^$]+\$|\*\*[^*]+\*\*|\[\[[^\]]+\]\]|\{\{[^}]+\}\}|\[[^\]]+\]\((?:https:\/\/|#\/)[^)]+\))/g), [text])
+  const parts = useMemo(() => text.split(/(`[^`]+`|\$[^$]+\$|\*\*[^*]+\*\*|\[\[[^\]]+\]\]|\{\{[^}]+\}\}|\[[^\]]+\]\((?:https:\/\/|#\/)[^)]+\))/g), [text])
   return (
     <>
       {parts.map((p, i) => {
+        if (p.startsWith('`') && p.endsWith('`') && p.length > 2) return <code key={i} className="ic">{p.slice(1, -1)}</code>
         if (p.startsWith('$') && p.endsWith('$') && p.length > 2) return <Tex key={i} src={p.slice(1, -1)} />
         if (p.startsWith('**')) return <strong key={i}><Inline text={p.slice(2, -2)} /></strong>
         if (p.startsWith('{{')) {
@@ -78,6 +79,14 @@ export function Rich({ text }: { text: string }) {
     for (let i = 0; i < lines.length;) {
       const line = lines[i]
       if (!line.trim()) { i++; continue }
+      if (line.startsWith('```')) {
+        const code: string[] = []
+        i++
+        while (i < lines.length && !lines[i].startsWith('```')) { code.push(lines[i]); i++ }
+        i++
+        out.push(<pre key={i} className="code"><code>{code.join('\n')}</code></pre>)
+        continue
+      }
       if (line.startsWith('|')) {
         const rows: string[][] = []
         while (i < lines.length && lines[i].startsWith('|')) {
@@ -92,13 +101,17 @@ export function Rich({ text }: { text: string }) {
             </table>
           </div>,
         )
+      } else if (/^\d+\. /.test(line)) {
+        const items: string[] = []
+        while (i < lines.length && /^\d+\. /.test(lines[i])) { items.push(lines[i].replace(/^\d+\. /, '')); i++ }
+        out.push(<ol key={i}>{items.map((t, k) => <li key={k}><Inline text={t} /></li>)}</ol>)
       } else if (line.startsWith('- ')) {
         const items: string[] = []
         while (i < lines.length && lines[i].startsWith('- ')) { items.push(lines[i].slice(2)); i++ }
         out.push(<ul key={i}>{items.map((t, k) => <li key={k}><Inline text={t} /></li>)}</ul>)
       } else {
         const para: string[] = []
-        while (i < lines.length && lines[i].trim() && !lines[i].startsWith('|') && !lines[i].startsWith('- ')) { para.push(lines[i]); i++ }
+        while (i < lines.length && lines[i].trim() && !lines[i].startsWith('|') && !lines[i].startsWith('- ') && !lines[i].startsWith('```') && !/^\d+\. /.test(lines[i])) { para.push(lines[i]); i++ }
         out.push(<p key={i}><Inline text={para.join(' ')} /></p>)
       }
     }

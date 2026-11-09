@@ -218,3 +218,12 @@ ELRS | radio-link | ExpressLRS: an open-source control radio link.
 VTX | em-waves | Video transmitter: sends camera video to goggles.
 OSD | mcu | On-screen display: text drawn over the video.
 GNSS | nav-sensors | Satellite positioning, including GPS.
+MQTT | - | A lightweight publish and subscribe messaging protocol for connected devices.
+broker | - | In MQTT, the server that passes messages between devices.
+ROS 2 | - | A framework for building robot software from small connected programs.
+RTOS | rtos | Real-time operating system: runs several tasks with predictable timing.
+IDE, IDEs | - | Integrated development environment: an editor that also builds and debugs code.
+SDK, SDKs | - | Software development kit: the libraries and tools to program a chip.
+HAL | - | Hardware abstraction layer: easy functions that hide register details.
+MAVLink | flight-controller | The message protocol used by ArduPilot and PX4.
+companion computer | ai-board | A Linux computer on a drone that handles vision and decisions.

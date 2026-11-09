@@ -11,9 +11,10 @@ import { Formulas, Labs, Laws, Research, SelfTest, Words } from './views/Views'
 import { Symbols } from './views/Symbols'
 import { Tools } from './views/Tools'
 import { Components } from './views/Components'
+import { Boards } from './views/Boards'
 import type { Kind } from './lib/parse'
 
-const TABS: [View, string][] = [['board', 'Board'], ['labs', 'Labs'], ['formulas', 'Formulas'], ['laws', 'Laws'], ['symbols', 'Symbols'], ['tools', 'Tools'], ['components', 'Components'], ['words', 'Words'], ['test', 'Self-test'], ['research', 'Research']]
+const TABS: [View, string][] = [['board', 'Board'], ['labs', 'Labs'], ['formulas', 'Formulas'], ['laws', 'Laws'], ['symbols', 'Symbols'], ['tools', 'Tools'], ['components', 'Components'], ['boards', 'Boards'], ['words', 'Words'], ['test', 'Self-test'], ['research', 'Research']]
 
 export default function App() {
   const { route, go } = useRoute()
@@ -110,6 +111,7 @@ export default function App() {
             {route.view === 'symbols' && <Symbols tab={route.arg} go={(t) => go('symbols', t)} open={open} />}
             {route.view === 'tools' && <Tools id={route.arg} go={(id) => go('tools', id)} open={open} />}
             {route.view === 'components' && <Components tab={route.arg} go={(t) => go('components', t)} open={open} />}
+            {route.view === 'boards' && <Boards arg={route.arg} open={open} />}
             {route.view === 'words' && <Words open={open} />}
             {route.view === 'test' && <SelfTest open={open} />}
             {route.view === 'research' && <Research open={open} learned={learned} />}

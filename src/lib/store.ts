@@ -21,12 +21,12 @@ export function useLearned() {
   return { learned, toggle, reset }
 }
 
-export type View = 'board' | 'labs' | 'formulas' | 'laws' | 'symbols' | 'tools' | 'components' | 'words' | 'test' | 'research'
+export type View = 'board' | 'labs' | 'formulas' | 'laws' | 'symbols' | 'tools' | 'components' | 'boards' | 'words' | 'test' | 'research'
 export interface Route { view: View; arg?: string }
 
 function parse(): Route {
   const [, view, arg] = location.hash.split('/')
-  return { view: (['board', 'labs', 'formulas', 'laws', 'symbols', 'tools', 'components', 'words', 'test', 'research'].includes(view) ? view : 'board') as View, arg: arg ? decodeURIComponent(arg) : undefined }
+  return { view: (['board', 'labs', 'formulas', 'laws', 'symbols', 'tools', 'components', 'boards', 'words', 'test', 'research'].includes(view) ? view : 'board') as View, arg: arg ? decodeURIComponent(arg) : undefined }
 }
 
 /** Keeps the current view in the URL so the back button and links work. */
