@@ -12,9 +12,11 @@ import { Symbols } from './views/Symbols'
 import { Tools } from './views/Tools'
 import { Components } from './views/Components'
 import { Boards } from './views/Boards'
+import { Guide } from './views/Guide'
+import { Walkthrough, seenWelcome } from './guide/Walkthrough'
 import type { Kind } from './lib/parse'
 
-const TABS: [View, string][] = [['board', 'Board'], ['labs', 'Labs'], ['formulas', 'Formulas'], ['laws', 'Laws'], ['symbols', 'Symbols'], ['tools', 'Tools'], ['components', 'Components'], ['boards', 'Boards'], ['words', 'Words'], ['test', 'Self-test'], ['research', 'Research']]
+const TABS: [View, string][] = [['board', 'Board'], ['labs', 'Labs'], ['formulas', 'Formulas'], ['laws', 'Laws'], ['symbols', 'Symbols'], ['tools', 'Tools'], ['components', 'Components'], ['boards', 'Boards'], ['words', 'Words'], ['test', 'Self-test'], ['research', 'Research'], ['guide', 'Guide']]
 
 export default function App() {
   const { route, go } = useRoute()
@@ -23,6 +25,7 @@ export default function App() {
   const [railOpen, setRailOpen] = useState(false)
   const [focusPhase, setFocusPhase] = useState<{ n: number; nonce: number } | null>(null)
   const [activePhase, setActivePhase] = useState(0)
+  const [walk, setWalk] = useState<'welcome' | 'tour' | null>(() => (seenWelcome() ? null : 'welcome'))
 
   const ready = useMemo(() => readySet(graph, learned), [learned])
   const open = useCallback((id: string) => go('board', id), [go])
@@ -115,8 +118,10 @@ export default function App() {
             {route.view === 'words' && <Words open={open} />}
             {route.view === 'test' && <SelfTest open={open} />}
             {route.view === 'research' && <Research open={open} learned={learned} />}
+            {route.view === 'guide' && <Guide open={open} tour={() => setWalk('tour')} learned={learned.size} />}
           </main>
         </div>
+        {walk && <Walkthrough mode={walk} close={() => setWalk(null)} go={(v) => go(v as View)} startLearning={() => open(graph.concepts[0].id)} />}
         {searching && <Search onClose={() => setSearching(false)} onPick={(id) => { setSearching(false); open(id) }} />}
       </div>
     </OpenConcept.Provider>

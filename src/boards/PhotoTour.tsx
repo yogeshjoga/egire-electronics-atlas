@@ -17,7 +17,7 @@ export function PhotoTour({ id }: { id: string }) {
           {photos.map((x, k) => <button key={x.file} type="button" aria-pressed={k === p} onClick={() => { setP(k); setI(0) }}>{x.caption}</button>)}
         </div>
       )}
-      <div className="tour-photo" style={{ aspectRatio: String(ph.ratio) }}>
+      <div className="tour-photo" style={{ aspectRatio: String(ph.ratio), width: `min(100%, ${Math.round(640 * ph.ratio)}px)` }}>
         <img src={`./boards/${ph.file}`} alt={ph.caption} loading="lazy" />
         {ph.spots.map((sp, k) => (
           <button key={sp.name} type="button" className="tour-spot" data-on={k === i || undefined} aria-pressed={k === i} aria-label={sp.name}

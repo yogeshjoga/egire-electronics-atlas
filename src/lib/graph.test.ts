@@ -131,6 +131,20 @@ describe('boards and software', () => {
       expect(dia.includes(`  ${p.id}: `) || dia.includes(`  '${p.id}': `), `diagram for ${p.id}`).toBe(true)
     }
   })
+  it('has a screenshot with labels on the image for every guide screen', async () => {
+    const { SCREENS, STAGES } = await import('../guide/guide')
+    const { existsSync } = await import('node:fs')
+    expect(new Set(SCREENS.map((x) => x.id)).size).toBe(SCREENS.length)
+    for (const sc of SCREENS) {
+      expect(existsSync(join(__dirname, '../../public/guide', sc.file)), sc.file).toBe(true)
+      expect(sc.spots.length, sc.id).toBeGreaterThan(2)
+      for (const p of sc.spots) {
+        expect(p.x, sc.id + p.name).toBeGreaterThan(0); expect(p.x).toBeLessThan(100)
+        expect(p.y, sc.id + p.name).toBeGreaterThan(0); expect(p.y).toBeLessThan(100)
+      }
+    }
+    expect(STAGES.map((x) => x.n)).toEqual([1, 2, 3, 4, 5, 6])
+  })
   it('has a real, credited photo with valid labels for each board tour', async () => {
     const { PHOTOS } = await import('../boards/photos')
     const { existsSync } = await import('node:fs')
