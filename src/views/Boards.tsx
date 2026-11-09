@@ -9,6 +9,8 @@ import { annotate } from '../lib/glossary'
 import { Inline, Rich } from '../components/Rich'
 import { Question } from '../components/Lesson'
 import { DIAGRAMS } from '../boards/diagrams'
+import { PhotoTour } from '../boards/PhotoTour'
+import { PHOTOS } from '../boards/photos'
 
 const SETS = {
   boards: { title: 'Boards', cards: parseCards(boardsMd), groupBy: 'group' },
@@ -66,6 +68,7 @@ function Detail({ card, set, open, steps }: { card: Card; set: SetKey; open: (id
       <p className="lede">{card.summary}</p>
       <p className="tool-tags">{[m.group, m.level].filter(Boolean).map((t) => <span key={t}>{t}</span>)}</p>
       <div className="guide-body">
+        {PHOTOS[card.id] && <section className="ds-section"><h3>Tour the board</h3><p>Select each number to see what that part does.</p><PhotoTour id={card.id} /></section>}
         {m.parts && <section className="ds-section"><h3>You'll need</h3><p>{m.parts}</p></section>}
         {text.map((s) => (
           <section key={s.title} className={`ds-section ${s.title === 'Safety' || s.title.startsWith('When not') || s.title === 'Watch out' || s.title === 'Disadvantages' ? 'trap' : ''}`}>

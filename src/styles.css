@@ -404,6 +404,20 @@ code.ic { padding: 0 4px; border-radius: 3px; background: #e2ebe5; font: 400 0.9
 
 .dia { display: block; width: 100%; height: auto; margin: 4px 0 12px; border-radius: 6px; background: var(--mask-deep); font-family: var(--ui); }
 
+.tour { display: grid; gap: 10px; }
+.tour-photo { position: relative; width: 100%; max-height: 640px; margin: 0 auto; border-radius: 6px; overflow: hidden; background: #ddd; }
+.tour-photo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.tour-spot { position: absolute; transform: translate(-50%, -50%); width: 26px; height: 26px; border-radius: 50%; background: var(--mask-deep); color: var(--gold); border: 2px solid var(--gold); font: 600 13px/1 var(--ui); box-shadow: 0 0 0 2px rgba(0,0,0,.35); }
+.tour-spot:hover { background: var(--mask); }
+.tour-spot[data-on] { background: var(--gold); color: var(--mask-deep); transform: translate(-50%, -50%) scale(1.15); }
+.tour-spot:focus-visible { outline: 3px solid var(--silk); }
+.tour-note { padding: 10px 14px; border-radius: 6px; background: var(--mask); color: var(--silk); font: 400 16.5px/1.45 var(--ui); min-height: 120px; }
+.tour-note p { margin: 0 0 4px !important; max-width: none !important; }
+.tour-note b { color: var(--gold); font-weight: 600; font-size: 18px; }
+.tour-note .xref { color: var(--gold); }
+.tour-credit { margin: 0 !important; font: 400 14px/1.4 var(--ui); color: var(--ink-soft); }
+.tour-credit a { color: var(--mask); }
+
 /* Search */
 .search-back { position: fixed; inset: 0; z-index: 30; padding: 9vh 14px 14px; background: rgba(3, 20, 16, .72); }
 .search { max-width: 620px; margin: 0 auto; background: var(--paper); color: var(--ink); border-radius: 8px; overflow: hidden; }

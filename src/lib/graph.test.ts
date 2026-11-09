@@ -131,6 +131,23 @@ describe('boards and software', () => {
       expect(dia.includes(`  ${p.id}: `) || dia.includes(`  '${p.id}': `), `diagram for ${p.id}`).toBe(true)
     }
   })
+  it('has a real, credited photo with valid labels for each board tour', async () => {
+    const { PHOTOS } = await import('../boards/photos')
+    const { existsSync } = await import('node:fs')
+    for (const [id, list] of Object.entries(PHOTOS)) {
+      expect(sets.boards.some((b) => b.id === id), id).toBe(true)
+      for (const ph of list) {
+        expect(existsSync(join(__dirname, '../../public/boards', ph.file)), ph.file).toBe(true)
+        for (const k of ['author', 'license', 'licenseUrl', 'source'] as const) expect(ph.credit[k], `${ph.file} ${k}`).toBeTruthy()
+        expect(ph.credit.source, ph.file).toMatch(/^https:\/\/commons\.wikimedia\.org\//)
+        for (const s of ph.spots) {
+          expect(s.x, s.name).toBeGreaterThan(0); expect(s.x, s.name).toBeLessThan(100)
+          expect(s.y, s.name).toBeGreaterThan(0); expect(s.y, s.name).toBeLessThan(100)
+          for (const r of [...s.text.matchAll(/\[\[([a-z0-9-]+)/g)].map((m) => m[1])) expect(g.byId.has(r) || r === 'ethernet', r).toBe(true)
+        }
+      }
+    }
+  })
   it('gives every project boards, software, lessons and steps', () => {
     for (const p of sets.projects) {
       for (const f of ['boards', 'stacks', 'lessons', 'level', 'parts']) expect(p.meta[f], `${p.id} ${f}`).toBeTruthy()
