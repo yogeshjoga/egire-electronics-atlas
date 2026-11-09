@@ -8,6 +8,7 @@ import { graph, matcher } from '../lib/content'
 import { annotate } from '../lib/glossary'
 import { Inline, Rich } from '../components/Rich'
 import { Question } from '../components/Lesson'
+import { DIAGRAMS } from '../boards/diagrams'
 
 const SETS = {
   boards: { title: 'Boards', cards: parseCards(boardsMd), groupBy: 'group' },
@@ -67,8 +68,10 @@ function Detail({ card, set, open, steps }: { card: Card; set: SetKey; open: (id
       <div className="guide-body">
         {m.parts && <section className="ds-section"><h3>You'll need</h3><p>{m.parts}</p></section>}
         {text.map((s) => (
-          <section key={s.title} className={`ds-section ${s.title === 'Safety' || s.title.startsWith('When not') || s.title === 'Watch out' ? 'trap' : ''}`}>
-            <h3>{s.title}</h3><Rich text={s.body} />
+          <section key={s.title} className={`ds-section ${s.title === 'Safety' || s.title.startsWith('When not') || s.title === 'Watch out' || s.title === 'Disadvantages' ? 'trap' : ''}`}>
+            <h3>{s.title}</h3>
+            {s.title === 'Pins and circuit' && DIAGRAMS[card.id]}
+            <Rich text={s.body} />
           </section>
         ))}
         {card.steps.length > 0 && (

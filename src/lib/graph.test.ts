@@ -122,6 +122,15 @@ describe('boards and software', () => {
       expect(list(c.meta.protocols).filter((id) => !sets.protocols.some((b) => b.id === id)), c.id).toEqual([])
     }
   })
+  it('gives every protocol the full set of sections and a wiring diagram', () => {
+    const dia = readFileSync(join(__dirname, '../boards/diagrams.tsx'), 'utf8')
+    const need = ['How it works inside', 'Advantages', 'Disadvantages', 'Pick it when', 'Pins and circuit', 'Example projects']
+    for (const p of sets.protocols.filter((c) => c.id !== 'choosing-protocols')) {
+      const titles = p.sections.map((s) => s.title)
+      expect(need.filter((t) => !titles.includes(t)), p.id).toEqual([])
+      expect(dia.includes(`  ${p.id}: `) || dia.includes(`  '${p.id}': `), `diagram for ${p.id}`).toBe(true)
+    }
+  })
   it('gives every project boards, software, lessons and steps', () => {
     for (const p of sets.projects) {
       for (const f of ['boards', 'stacks', 'lessons', 'level', 'parts']) expect(p.meta[f], `${p.id} ${f}`).toBeTruthy()

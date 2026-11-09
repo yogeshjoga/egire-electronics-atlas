@@ -402,6 +402,8 @@ code.ic { padding: 0 4px; border-radius: 3px; background: #e2ebe5; font: 400 0.9
 .card-link span { color: var(--silk-dim); font-size: 15.5px; }
 .card-link em { display: block; margin-top: 4px; font-style: normal; font-size: 14.5px; color: var(--gold); }
 
+.dia { display: block; width: 100%; height: auto; margin: 4px 0 12px; border-radius: 6px; background: var(--mask-deep); font-family: var(--ui); }
+
 /* Search */
 .search-back { position: fixed; inset: 0; z-index: 30; padding: 9vh 14px 14px; background: rgba(3, 20, 16, .72); }
 .search { max-width: 620px; margin: 0 auto; background: var(--paper); color: var(--ink); border-radius: 8px; overflow: hidden; }
