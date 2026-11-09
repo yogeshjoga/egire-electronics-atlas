@@ -477,6 +477,14 @@ code.ic { padding: 0 4px; border-radius: 3px; background: #e2ebe5; font: 400 0.9
 .wt-choice:hover { border-color: var(--mask); }
 .wt-skip { color: var(--ink-soft); text-decoration: underline; font-size: 15px; }
 .wt-step { position: fixed; padding: 16px 18px; }
+.wt-arrow { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; filter: drop-shadow(0 2px 3px rgba(0,0,0,.45)); }
+.wt-arrow-line { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: wt-draw .55s cubic-bezier(.3,.7,.3,1) .1s forwards; }
+.wt-arrow-head { fill: var(--gold); opacity: 0; animation: wt-fade .2s ease-out .55s forwards; }
+.wt-arrow { animation: wt-nudge 1.6s ease-in-out .8s infinite; }
+@keyframes wt-draw { to { stroke-dashoffset: 0; } }
+@keyframes wt-fade { to { opacity: 1; } }
+@keyframes wt-nudge { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(var(--nx, 0), var(--ny, 0)); } }
+@media (prefers-reduced-motion: reduce) { .wt-arrow, .wt-arrow-line, .wt-arrow-head { animation: none; stroke-dashoffset: 0; opacity: 1; } }
 .wt-nav { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
 .wt-nav span { display: flex; gap: 8px; }
 .wt-nav .ghost { color: var(--ink); background: #fff; border-color: var(--rule); padding: 7px 14px; }
